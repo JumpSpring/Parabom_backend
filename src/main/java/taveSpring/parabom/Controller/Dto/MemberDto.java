@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 public class MemberDto {
 
     @Getter @Setter
+    @AllArgsConstructor
     public static class SaveRequest{
         @NotEmpty(message = "이메일을 입력해주세요.")
         @Email(message = "이메일 형식이 올바르지 않습니다.")
@@ -33,6 +34,11 @@ public class MemberDto {
                     .profile(profile)
                     .build();
         }
+
+        public static SaveRequest of(Member member) {
+            return new SaveRequest(member.getEmail(),member.getPassword(),
+                    member.getNickname(),member.getProfile(),member.getAddress());
+        }
     }
 
     @Getter @Setter
@@ -45,6 +51,7 @@ public class MemberDto {
     }
 
     @Getter @Setter
+    @AllArgsConstructor
     public static class ModifyRequest{
         private String nickname;
         private String profile;
