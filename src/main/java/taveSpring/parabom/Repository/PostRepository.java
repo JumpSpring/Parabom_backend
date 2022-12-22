@@ -11,6 +11,6 @@ public interface PostRepository  extends JpaRepository<Post,Long> {
     /* 특정 카테고리 게시글 리스트 조회 */
     List<Post> findAllByCategory(String postCategoryName); // member fetch join
 
-    /* 찜한 게시글 목록 조회 */
-    //List<Post> findAllListOfLiked(Long memberId); // member fetch join
+//    /* 찜한 게시글 목록 조회 */
+//    List<Post> findAllListOfLiked(Long memberId); // member fetch join
 }
