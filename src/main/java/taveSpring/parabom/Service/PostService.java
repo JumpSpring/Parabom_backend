@@ -2,9 +2,7 @@ package taveSpring.parabom.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import taveSpring.parabom.Controller.Dto.PostDto;
-import taveSpring.parabom.Domain.Image;
 import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
 import taveSpring.parabom.Repository.PostRepository;
@@ -19,7 +17,6 @@ import java.util.stream.Stream;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final PostImageService postImageService;
 
     /*게시물 상세조회*/
     public PostDto.PostDetailDto productDetail(Long id) {
@@ -29,31 +26,9 @@ public class PostService {
 
     /*게시물 등록*/
     @Transactional
-    public Long postCreate(PostDto.PostCreateDto postDto, List<MultipartFile> imageList) throws Exception {
-
-        // 게시물 정보 등록 (이미지 제외)
-        Post post = postRepository.save(postDto.toEntity());
-
-        //이미지 등록
-        for(int i=0 ; i<imageList.size(); i++){
-            Image image = new Image();
-            image.setPost(post);
-            postImageService.saveImage(image, imageList.get(i));
-        }
-        return post.getId();
+    public Long postCreate(PostDto.PostCreateDto dto) {
+        return postRepository.save(dto.toEntity()).getId();
     }
-
-    /*게시물 찜 목록에 추가
-    @Transactional
-    public void addHeart(Long id) {
-
-        if(== null){ // 위시리스트가 없다면 만들어줌
-
-        }
-        PostDto.AddHeartDto addHeartDto = new PostDto.AddHeartDto();
-        addHeartDto.setId(id);
-        postLikesRepository.save(addHeartDto.getId());
-    }*/
 
     /*게시물 전체조회*/
     public List<PostDto.PostDetailDto> getAllPostInfo() {
@@ -68,10 +43,10 @@ public class PostService {
                 .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());
     }
 
-    /*찜한 목록 조회
-    public List<PostDto.PostDetailDto> getAllPostInfoLiked(Long memberId) {
-        return postRepository.findAllListOfLiked(memberId).stream()
-                .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());
-    }*/
+//    /*찜한 목록 조회*/
+//    public List<PostDto.PostDetailDto> getAllPostInfoLiked(Long memberId) {
+//        return postRepository.findAllListOfLiked(memberId).stream()
+//                .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());
+//    }
 
 }
