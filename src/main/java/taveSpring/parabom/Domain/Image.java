@@ -18,7 +18,7 @@ public class Image {
 
     @ManyToOne
     @JoinColumn(name = "id")
-    private Post postId;
+    private Post post; // postId -> post로 수정함
 
     private byte[] image;
     private String name;

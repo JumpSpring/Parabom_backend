@@ -35,14 +35,16 @@ public class Post {
     @CreationTimestamp
     private Timestamp date;
 
-    /*
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
-    */
 
-    @OneToMany(mappedBy = "postId")
+    @OneToMany(mappedBy = "post")
     private List<Image> images = new ArrayList<Image>();
 
-
+    // 연관관계 메서드
+    public void addImages(Image image) {
+        this.images.add(image);
+        image.setPost(this);
+    }
 }
