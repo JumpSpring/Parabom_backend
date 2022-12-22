@@ -38,15 +38,15 @@ public class PostService {
     }
 
     /*카테고리 조회*/
-    public List<PostDto.PostDetailDto> getAllPostInfoByCategory(String categoryName) {
+    /*public List<PostDto.PostDetailDto> getAllPostInfoByCategory(String categoryName) {
         return postRepository.findAllByCategory(categoryName).stream()
                 .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());
-    }
+    }*/
 
     /*찜한 목록 조회*/
-    public List<PostDto.PostDetailDto> getAllPostInfoLiked(Long memberId) {
+    /*public List<PostDto.PostDetailDto> getAllPostInfoLiked(Long memberId) {
         return postRepository.findAllListOfLiked(memberId).stream()
                 .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());
-    }
+    }*/
 
 }
