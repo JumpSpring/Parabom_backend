@@ -2,7 +2,6 @@ package taveSpring.parabom.Domain.review;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import taveSpring.parabom.Domain.Member;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,5 +21,8 @@ public class Review {
     private Integer commentCount = 0;       // 받은 후기 개수
     @Column(name = "total_star_point")
     private Double totalStarPoint = 0.0;    // 받은 총 별점
+
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+    private List<ReviewComment> reviewComments = new ArrayList<>();
 
 }
