@@ -2,10 +2,10 @@ package taveSpring.parabom.Domain.review;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import taveSpring.parabom.Domain.Member;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -17,16 +17,12 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
-
     @Column(name = "comment_count")
-    private Integer commentCount;
-    @Column(name = "average_star_point")
-    private Double averageStarPoint;
+    private Integer commentCount = 0;       // 받은 후기 개수
+    @Column(name = "total_star_point")
+    private Double totalStarPoint = 0.0;    // 받은 총 별점
 
-    @Column(name = "created_date")
-    private LocalDateTime createdDate;
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+    private List<ReviewComment> reviewComments = new ArrayList<>();
 
 }
