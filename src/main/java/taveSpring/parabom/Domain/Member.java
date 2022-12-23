@@ -3,6 +3,7 @@ package taveSpring.parabom.Domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import taveSpring.parabom.Domain.review.Review;
 
 import javax.persistence.*;
 
@@ -18,6 +19,10 @@ public class Member {
     private String nickname;
     private String profile;
     private String address;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "review_id")
+    private Review review;
 
     @Builder
     public Member( String email, String password, String nickname, String profile, String address) {
