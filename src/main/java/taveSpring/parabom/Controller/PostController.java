@@ -35,7 +35,6 @@ public class PostController {
                                                           Model model) throws Exception {
         try { // 상품 저장 로직 호출
             //postService.postCreate(dto, imageFileList);
-            System.out.println(1);
         }
         catch (Exception e){
             model.addAttribute("errorMessage : ", "게시물 등록 중 에러 발생!");
