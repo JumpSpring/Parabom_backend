@@ -31,7 +31,7 @@ public class PostService {
     public PostDto.PostDetailDto productDetail(Long id) {
 
         // 이미지
-        List<Image> imageList = imageRepository.findByPostId(id);
+        List<Image> imageList = imageRepository.findByIdBy(id);
         List<ImageDto.ImageInfoDto> imageDtoList = new ArrayList<>();
 
         for (Image images : imageList) {
@@ -51,27 +51,25 @@ public class PostService {
     @Transactional
     public Long postCreate(PostDto.PostCreateDto postDto, List<MultipartFile> imageList) throws Exception {
 
-        // 게시물 내용 등록
-        //Post post = postRepository.save(postDto.toEntity());
+        // 게시물 등록
+        Post post = postDto.toEntity();
+        postRepository.save(post);
 
         // 이미지 등록
         for(int i=0 ; i<imageList.size(); i++){
             Image image = new Image();
-            //image.setPost(post);
-            postImageService.saveImage(image, imageList.get(i));
-            System.out.println("[Info][productCreate SERVICE] image.getPath() : " + image.getPath());
 
-            Post postE = new Post(); //new
-            postE.addImages(image); //new
             postDto.setImage(image);
+            image.setPost(post);
+            //Post postE = new Post();
+            //postE.addImages(image);
+            postImageService.saveImage(image, imageList.get(i));
+
+            System.out.println("[Info][productCreate SERVICE] image.getPath() : " + image.getPath());
         }
 
-        // 게시물 내용 등록
-        Post post = postRepository.save(postDto.toEntity());
 
-        // 이미지 엔티티에는 저장에 되는데 post 엔티티에는 저장이 안된다... 왜일까
-        System.out.println("[Info][productCreate SERVICE] post.getImages() : " + post.getImages()); // [null]
-
+        System.out.println("[Info][productCreate SERVICE] post.getImages() : " + post.getImages());
         return post.getId();
     }
 
