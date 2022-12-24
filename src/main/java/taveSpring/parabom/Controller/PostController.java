@@ -19,7 +19,7 @@ public class PostController {
 
     private final PostService postService;
 
-    /* 타회원 게시물 상세조회*/
+    /* 게시물 상세조회*/
     // TODO : 중고상품 이미지, 멤버 닉네임 & 프사 받아오기
     @GetMapping(path = "/productDetail")
     public ResponseEntity<? extends BasicResponse> productDetail(@RequestParam(value="id") Long id) throws Exception {
