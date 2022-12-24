@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import taveSpring.parabom.Controller.Dto.PostDto;
 import taveSpring.parabom.Domain.Image;
+import taveSpring.parabom.Domain.Post;
 import taveSpring.parabom.Repository.ImageRepository;
 import taveSpring.parabom.Repository.PostRepository;
 
@@ -16,6 +17,8 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class PostImageService {
+
+
 
     //@Value("${custom.path.uploadPath}") // application.yml의 itemImgLocation 값을 불러와서 itemImgLocation 변수에다 넣어줌
     private String imageLocation = "D:\\22-12-Parabom-Project-new";

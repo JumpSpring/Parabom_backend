@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 
 public class PostDto {
 
+    public static Post post;
+
     // DTO -> Entity 혹은 Entity -> DTO 변환
     private static ModelMapper modelMapper = new ModelMapper();
 
@@ -76,6 +78,7 @@ public class PostDto {
 
     }
 
+    /*게시물 등록*/
     @Getter @Setter
     @AllArgsConstructor
     @NoArgsConstructor

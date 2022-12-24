@@ -21,7 +21,7 @@ public class Post {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // AUTO_INCREMENT 추가 new
     private Long id;
     private String name;
     private int price;
@@ -42,7 +42,7 @@ public class Post {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
     private List<Image> images = new ArrayList<Image>();
 
     // 연관관계 메서드
