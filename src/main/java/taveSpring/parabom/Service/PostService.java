@@ -20,7 +20,8 @@ public class PostService {
 
     /*게시물 상세조회*/
     public PostDto.PostDetailDto productDetail(Long id) {
-        Post entity = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
+        Post entity = postRepository.findById(id).orElseThrow(()
+                -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
         return new PostDto.PostDetailDto(entity);
     }
 
@@ -38,10 +39,10 @@ public class PostService {
     }
 
     /*카테고리 조회*/
-    /*public List<PostDto.PostDetailDto> getAllPostInfoByCategory(String categoryName) {
+    public List<PostDto.PostDetailDto> getAllPostInfoByCategory(String categoryName) {
         return postRepository.findAllByCategory(categoryName).stream()
                 .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());
-    }*/
+    }
 
     /*찜한 목록 조회*/
     /*public List<PostDto.PostDetailDto> getAllPostInfoLiked(Long memberId) {

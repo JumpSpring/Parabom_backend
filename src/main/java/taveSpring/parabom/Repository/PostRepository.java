@@ -6,7 +6,7 @@ import taveSpring.parabom.Domain.Post;
 import java.util.List;
 import java.util.Optional;
 
-public interface PostRepository  extends JpaRepository<Post,Long> {
+public interface PostRepository  extends JpaRepository<Post,Long>, PostRepositoryCustom {
 
     /* 특정 카테고리 게시글 리스트 조회 */
     //List<Post> findAllByCategory(String postCategoryName); // member fetch join
