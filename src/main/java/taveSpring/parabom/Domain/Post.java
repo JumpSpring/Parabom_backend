@@ -5,9 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Getter @Setter
@@ -17,7 +15,7 @@ import java.util.List;
 public class Post {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "post_id")
     @GeneratedValue
     private Long id;
     private String name;
@@ -41,6 +39,9 @@ public class Post {
 
     @OneToMany(mappedBy = "post")
     private List<Image> images = new ArrayList<Image>();
+
+    @OneToMany(mappedBy = "post")
+    private Set<PostLikes> likes = new HashSet<>();
 
     // 연관관계 메서드
     public void addImages(Image image) {
