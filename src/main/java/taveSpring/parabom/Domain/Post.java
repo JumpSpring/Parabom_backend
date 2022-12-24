@@ -2,8 +2,11 @@ package taveSpring.parabom.Domain;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.web.multipart.MultipartFile;
+import taveSpring.parabom.Controller.Dto.ImageDto;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,7 +38,7 @@ public class Post {
     @CreationTimestamp
     private Timestamp date;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -47,4 +50,7 @@ public class Post {
         this.images.add(image);
         image.setPost(this);
     }
+
+
+
 }

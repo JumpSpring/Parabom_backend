@@ -19,16 +19,15 @@ public class PostController {
 
     private final PostService postService;
 
-    /*게시물 상세조회*/
-    // TODO : 멤버 닉네임 & 프사 받아오기
-    // 내 게시물 조회와 타인 게시물 조회 따로 구현?
+    /* 타회원 게시물 상세조회*/
+    // TODO : 중고상품 이미지, 멤버 닉네임 & 프사 받아오기
     @GetMapping(path = "/productDetail")
     public ResponseEntity<? extends BasicResponse> productDetail(@RequestParam(value="id") Long id) throws Exception {
         return ResponseEntity.ok(new CommonResponse<PostDto.PostDetailDto>(postService.productDetail(id)));
     }
 
     /*게시물 등록*/
-    // TODO : 사진 등록, 로그인 정보 받아오기
+    // TODO : 로그인 정보 받아오기 (게시물 내용과 이미지에 member_id 적용)
     @PostMapping(path = "/create")
     public ResponseEntity<? extends BasicResponse> create(@RequestPart("dto") PostDto.PostCreateDto dto,
                                                           @RequestPart("image") List<MultipartFile> imageFileList,
