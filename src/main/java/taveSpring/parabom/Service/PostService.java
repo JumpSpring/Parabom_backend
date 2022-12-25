@@ -44,7 +44,8 @@ public class PostService {
         PostDto.PostDetailDto detailDto = new PostDto.PostDetailDto(entity);
         detailDto.setImageDtoList(imageDtoList);
         System.out.print("[Info][productDetail SERVICE] detailDto.getImageInfoDtos() : " + detailDto.getImageDtoList());
-        return new PostDto.PostDetailDto(entity);
+        System.out.print("[Info][productDetail SERVICE] imageDtoList.get(0) : " + imageDtoList.get(0));
+        return detailDto;
     }
 
     /*게시물 등록*/
@@ -64,10 +65,8 @@ public class PostService {
             //Post postE = new Post();
             //postE.addImages(image);
             postImageService.saveImage(image, imageList.get(i));
-
             System.out.println("[Info][productCreate SERVICE] image.getPath() : " + image.getPath());
         }
-
 
         System.out.println("[Info][productCreate SERVICE] post.getImages() : " + post.getImages());
         return post.getId();
