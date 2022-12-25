@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
 
 public class PostDto {
 
-    public static Post post;
-
     // DTO -> Entity 혹은 Entity -> DTO 변환
     private static ModelMapper modelMapper = new ModelMapper();
 
@@ -54,26 +52,29 @@ public class PostDto {
             // entity 를 파라미터로 받아서 dto 로 반환함
         }
 
-        public PostDetailDto(Post entity) {
+        public PostDetailDto(Post post) {
+            ImageDto.ImageInfoDto imageInfoDto = new ImageDto.ImageInfoDto();
             //listDtoToListEntity(imageDtoList); // List<image entity> -> List<imageInfoDto>
             //this.memberId = entity.getMember().getId();
             //this.getMember().getNickname();
             //this.getMember().getProfile();
-            this.id = entity.getId();
-            this.name = entity.getName();
-            this.price = entity.getPrice();
-            this.finOrIng = entity.getFinOrIng();
-            this.datePurchased = entity.getDatePurchased();
-            this.openOrNot = entity.getOpenOrNot();
-            this.status = entity.getStatus();
-            this.openOrNot = entity.getOpenOrNot();
-            this.directOrDel = entity.getDirectOrDel();
-            this.hashtag = entity.getHashtag();
-            this.title = entity.getTitle();
-            this.content = entity.getContent();
-            this.date = entity.getDate();
-
-            this.getImageDtoList();
+            this.id = post.getId();
+            this.name = post.getName();
+            this.price = post.getPrice();
+            this.finOrIng = post.getFinOrIng();
+            this.datePurchased = post.getDatePurchased();
+            this.openOrNot = post.getOpenOrNot();
+            this.status = post.getStatus();
+            this.openOrNot = post.getOpenOrNot();
+            this.directOrDel = post.getDirectOrDel();
+            this.hashtag = post.getHashtag();
+            this.title = post.getTitle();
+            this.content = post.getContent();
+            this.date = post.getDate();
+            for(int i=0; i<imageDtoList.size(); i++) {
+                imageInfoDto = imageDtoList.get(i);
+            }
+            //this.imageDtoList = imageInfoDto.getPath();
         }
 
     }
