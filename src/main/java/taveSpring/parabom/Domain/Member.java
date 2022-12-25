@@ -29,9 +29,9 @@ public class Member {
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     private List<Review> sendReviews = new ArrayList<>();
 
-    //받은 총 별점
-    @Column(name = "total_star_point")
-    private Double totalStarPoint = 0.0;
+    //받은 리뷰들의 평균 별점
+    @Column(name = "avg_star_point")
+    private Double avgStarPoint = 0.0;
 
     @Builder
     public Member( String email, String password, String nickname, String profile, String address) {
