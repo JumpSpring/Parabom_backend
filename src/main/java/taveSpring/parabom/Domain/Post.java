@@ -5,6 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -47,5 +48,26 @@ public class Post {
     public void addImages(Image image) {
         this.images.add(image);
         image.setPost(this);
+    }
+
+    // 생성 메서드
+    public static Post createPost(String name, int price, Integer foi, Date datePurchased, Integer openOrNot,
+                                  String status, String directOrDel, String category, String hashtag,
+                                  String title, String content, Member member) {
+        return Post.builder()
+                .name(name)
+                .price(price)
+                .finOrIng(foi)
+                .datePurchased(datePurchased)
+                .openOrNot(openOrNot)
+                .status(status)
+                .directOrDel(directOrDel)
+                .category(category)
+                .hashtag(hashtag)
+                .title(title)
+                .content(content)
+                .member(member)
+                .date(Timestamp.valueOf(LocalDateTime.now()))
+                .build();
     }
 }

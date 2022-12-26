@@ -20,6 +20,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
 
     @Override
     public List<Post> findAllListOfLiked(Long memberId) {
-        return null;
+        return em.createQuery("select p from PostLikes pl " +
+                "join pl.post p on pl.member.id = :memberId", Post.class)
+                .setParameter("memberId", memberId)
+                .getResultList();
     }
 }
