@@ -3,14 +3,12 @@ package taveSpring.parabom.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import taveSpring.parabom.Controller.Dto.PostDto;
-import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
 import taveSpring.parabom.Repository.PostRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -45,9 +43,9 @@ public class PostService {
     }
 
     /*찜한 목록 조회*/
-    /*public List<PostDto.PostDetailDto> getAllPostInfoLiked(Long memberId) {
+    public List<PostDto.PostDetailDto> getAllPostInfoLiked(Long memberId) {
         return postRepository.findAllListOfLiked(memberId).stream()
                 .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());
-    }*/
+    }
 
 }
