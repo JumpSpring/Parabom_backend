@@ -43,7 +43,6 @@ public class PostDto {
             this.price = entity.getPrice();
             this.finOrIng = entity.getFinOrIng();
             this.datePurchased = entity.getDatePurchased();
-            this.openOrNot = entity.getOpenOrNot();
             this.status = entity.getStatus();
             this.openOrNot = entity.getOpenOrNot();
             this.directOrDel = entity.getDirectOrDel();
