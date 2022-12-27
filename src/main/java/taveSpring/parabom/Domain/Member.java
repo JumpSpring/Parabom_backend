@@ -50,4 +50,16 @@ public class Member {
         if(address != null)
             this.address = address;
     }
+
+    public void addMyReviews(Review review) {
+        double totalStarPoint = avgStarPoint * myReviews.size();
+        totalStarPoint += review.getStarPoint();
+
+        myReviews.add(review);
+        avgStarPoint = totalStarPoint / myReviews.size();
+    }
+
+    public void addSendReviews(Review review) {
+        sendReviews.add(review);
+    }
 }
