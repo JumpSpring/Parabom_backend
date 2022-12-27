@@ -1,9 +1,6 @@
 package taveSpring.parabom.Controller.Dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import taveSpring.parabom.Domain.Image;
 import taveSpring.parabom.Domain.Member;
@@ -60,6 +57,7 @@ public class PostDto {
     @Getter @Setter
     @AllArgsConstructor
     @NoArgsConstructor
+    @Builder
     public static class PostCreateDto {
         private String name;
         private int price;
@@ -80,7 +78,7 @@ public class PostDto {
            return Post.builder().name(name).price(price).finOrIng(finOrIng)
                    .datePurchased(datePurchased).date(date).openOrNot(openOrNot)
                    .status(status).directOrDel(directOrDel).category(category).hashtag(hashtag)
-                   .title(title).content(content).date(date).build();
+                   .title(title).content(content).build();
         }
 
     }
