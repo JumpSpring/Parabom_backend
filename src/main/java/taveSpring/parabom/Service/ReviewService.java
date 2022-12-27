@@ -33,4 +33,10 @@ public class ReviewService {
         return ReviewDto.IdResponse.of(review);
     }
 
+    @Transactional
+    public void deleteReview(Long id) {
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("후기 정보가 없습니다."));
+        reviewRepository.delete(review);
+    }
 }
