@@ -40,6 +40,8 @@ public class ReviewServiceTest {
         IdResponse idResponse = reviewService.saveReview(dto);
         Review findReview = reviewRepository.findById(idResponse.getId()).orElseThrow();
 
+        assertEquals(member1, findReview.getSender());
+        assertEquals(member2, findReview.getRecipient());
         assertEquals(ReviewSenderType.SELLER, findReview.getSenderType());
         assertEquals("iphone13", findReview.getItemName());
         assertEquals("감사합니다!", findReview.getText());
