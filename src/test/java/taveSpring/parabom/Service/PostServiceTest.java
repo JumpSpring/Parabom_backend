@@ -11,7 +11,9 @@ import org.springframework.test.annotation.Rollback;
 import taveSpring.parabom.Controller.Dto.PostDto;
 import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
+import taveSpring.parabom.Domain.PostLikes;
 import taveSpring.parabom.Repository.MemberRepository;
+import taveSpring.parabom.Repository.PostLikesRepository;
 import taveSpring.parabom.Repository.PostRepository;
 
 import javax.transaction.Transactional;
@@ -21,13 +23,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Rollback(value = false)
 class PostServiceTest {
 
     @Autowired PostService postService;
@@ -35,6 +37,8 @@ class PostServiceTest {
     PostRepository postRepository;
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    PostLikesService postLikesService;
 
     public Post beforeEach() { // post 생성하여 저장
         Optional<Member> member = memberRepository.findById(Integer.toUnsignedLong(1));
@@ -85,5 +89,43 @@ class PostServiceTest {
         assertEquals("ps4", postDetailDto.getName());
         assertEquals(300000, postDetailDto.getPrice());
         assertEquals("게임기", postDetailDto.getHashtag());
+    }
+
+    @Test
+    @DisplayName("카테고리 조회 테스트")
+    public void 카테고리_조회() throws Exception {
+        Post post = beforeEach();
+        List<PostDto.PostDetailDto> postDetailDtos = postService.getAllPostInfoByCategory("전자제품");
+
+        assertEquals(1, postDetailDtos.size());
+
+        PostDto.PostDetailDto postDetailDto = postDetailDtos.get(0);
+        assertEquals("ps5", postDetailDto.getName());
+        assertEquals(500000, postDetailDto.getPrice());
+        assertEquals("게임기", postDetailDto.getHashtag());
+    }
+
+    @Test
+    @DisplayName("좋아요 테스트")
+    public void 좋아요() throws Exception {
+        Post post = beforeEach();
+        PostDto.PostDetailDto postDetailDto = postService.productDetail(post.getId());
+
+        postLikesService.clickPostLikes(Integer.toUnsignedLong(1), post.getId());
+
+        Optional<PostLikes> postlikes = postLikesService.findOne(Integer.toUnsignedLong(1), post.getId());
+        assertNotNull(postlikes.get());
+    }
+
+    @Test
+    @DisplayName("좋아요 취소 테스트")
+    public void 좋아요_취소() throws Exception {
+
+    }
+
+    @Test
+    @DisplayName("내 찜 목록 조회 테스트")
+    public void 찜한_목록_조회() throws Exception {
+
     }
 }
