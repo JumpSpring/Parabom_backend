@@ -3,8 +3,8 @@ package taveSpring.parabom.Domain;
 import java.util.Arrays;
 
 public enum ReviewSenderType {
-    BUYER("판매자"),
-    SELLER("구매자");
+    SELLER("판매자"),
+    BUYER("구매자");
 
     private final String data;
 
