@@ -42,7 +42,7 @@ public class Post {
     private List<Image> images = new ArrayList<Image>();
 
     @OneToMany(mappedBy = "post")
-    private Set<PostLikes> likes = new HashSet<>();
+    private Set<PostLikes> likes = new HashSet<PostLikes>();
 
     // 연관관계 메서드
     public void addImages(Image image) {
@@ -68,6 +68,7 @@ public class Post {
                 .content(content)
                 .member(member)
                 .date(Timestamp.valueOf(LocalDateTime.now()))
+                .likes(new HashSet<>())
                 .build();
     }
 }
