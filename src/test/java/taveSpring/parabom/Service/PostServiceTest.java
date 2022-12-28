@@ -54,16 +54,12 @@ class PostServiceTest {
                 0, "good", "direct", "전자제품", "게임기", "ps5",
                 "ps5", member.get());
 
+        // 이미지 추가
         Image image = new Image(1L, post, member.get(), "fileName.jpg", "oriFileName.jpg" ,
                 "D:\\22-12-Parabom-Project-new");
         List<Image> imageList = new ArrayList<>();
         imageList.add(image);
         post.setImages(imageList);
-
-//        MultipartFile mFile = new MockMultipartFile(image.getFileName(), image.getOriFileName().getBytes());
-//        List<MultipartFile> multipartFiles = new ArrayList<>();
-//        multipartFiles.add(mFile);
-//        postImageService.saveImage(image, multipartFiles.get(0));
 
         return postRepository.save(post);
     }
@@ -99,35 +95,6 @@ class PostServiceTest {
         //assertEquals(post.getImages(), postDetailDto.getImageDtoList()); -> postman으로 이미지정보 조회 확인완료
     }
 
-    /*@Test
-    @DisplayName("게시글 등록 테스트")
-    public void 게시글_등록() throws Exception {
-
-        // given
-        PostDto.PostCreateDto postCreateDto = PostDto.PostCreateDto.builder()
-                .name("ps4").price(300000).finOrIng(0).datePurchased(getDate(2016, 1, 1))
-                .date(Timestamp.valueOf(LocalDateTime.now())).openOrNot(0).status("good")
-                .directOrDel("direct").category("전자제품").hashtag("게임기").title("ps4")
-                .content("ps4").build();
-
-        Image image = Image.builder().fileName("fileName.jpg").oriFileName("oriFileName.jpg")
-                .path("D:\\22-12-Parabom-Project-new").build();
-
-        MultipartFile mFile = new MockMultipartFile(image.getFileName(), image.getOriFileName().getBytes());
-        List<MultipartFile> multipartFiles = new ArrayList<>();
-        multipartFiles.add(mFile);
-
-        // when
-        Long postId = postService.postCreate(postCreateDto, multipartFiles);
-
-        // then
-        PostDto.PostDetailDto postDetailDto = postService.productDetail(postId);
-        assertEquals("ps4", postDetailDto.getName());
-        assertEquals(300000, postDetailDto.getPrice());
-        assertEquals("게임기", postDetailDto.getHashtag());
-        //assertEquals(, postDetailDto.getMember());
-        //assertEquals(, postDetailDto.getImageDtoList());
-    }*/
 
 
 }
