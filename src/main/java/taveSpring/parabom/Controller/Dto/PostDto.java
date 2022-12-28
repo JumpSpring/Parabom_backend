@@ -104,8 +104,28 @@ public class PostDto {
                    .status(status).directOrDel(directOrDel).category(category).hashtag(hashtag)
                    .title(title).content(content).date(date).build();
         }
-
     }
+
+
+    /*게시물 수정*/
+    @Getter @Setter
+    @AllArgsConstructor
+    public static class ModifyRequest{
+        private int price;
+        private Integer openOrNot;
+        private String status;
+        private String directOrDel;
+        private String category;
+        private String hashtag;
+    }
+
+    /*게시물 거래 상태 수정*/
+    @Getter @Setter
+    @AllArgsConstructor
+    public static class ModifyFinOrIngRequest {
+        private Integer finOrIng;
+    }
+
 
     @Getter @Setter
     @AllArgsConstructor

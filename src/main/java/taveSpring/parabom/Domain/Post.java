@@ -47,4 +47,20 @@ public class Post {
         this.images.add(image);
         image.setPost(this);
     }
+
+    // 게시물 수정 기능
+    public void update(int price, Integer openOrNot, String status, String directOrDel, String category, String hashtag) {
+        this.price = price;
+        this.openOrNot = openOrNot;
+        this.status = status;
+        this.directOrDel = directOrDel;
+        this.category = category;
+        this.hashtag = hashtag;
+    }
+
+    // 게시물 거래 상태 수정 기능
+    public void updateFinOrIng(Integer finOrIng) {
+        // finOrIng값 업데이트
+        this.finOrIng = finOrIng;
+    }
 }

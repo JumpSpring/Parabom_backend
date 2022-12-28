@@ -10,6 +10,10 @@ import taveSpring.parabom.Controller.Response.BasicResponse;
 import taveSpring.parabom.Controller.Response.CommonResponse;
 import taveSpring.parabom.Service.PostService;
 
+import javax.persistence.Basic;
+
+import static taveSpring.parabom.Controller.Dto.PostDto.*;
+
 import java.util.List;
 
 @RestController
@@ -42,6 +46,8 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
+
+
     /*게시물 찜 목록에 추가
     @PostMapping(path = "/addHeart/{id}}")
     public ResponseEntity<? extends BasicResponse> addHeart(@RequestParam(name = "id") Long id) throws Exception {
@@ -49,4 +55,32 @@ public class PostController {
         return ResponseEntity.ok(new CommonResponse<PostDto.AddHeartDto>(postService.addHeart(id)));
     }*/
 
+    /*구매 상태 변경*/
+    @PatchMapping(path = "/productState/{post-id}")
+    public ResponseEntity<? extends BasicResponse> changeFinOrIng(@PathVariable("post-id") Long id,
+                                                                  ModifyFinOrIngRequest request, Model model) {
+
+        try { // 구매 상태 변경 로직 호출
+            postService.changeFinOrIng(id, request);
+        }
+        catch (Exception e){
+            model.addAttribute("errorMessage : ", "구매 상태 변경 중 오류 발생");
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    /*상품 삭제*/
+    @DeleteMapping(path = "post/{post-id}")
+    public ResponseEntity<? extends BasicResponse> deletePost(@PathVariable("post-id") Long id) {
+        postService.postDelete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    /*게시물 수정*/
+    @PatchMapping(path = "post/{post-id}")
+    public ResponseEntity<? extends BasicResponse> modifyPost(@PathVariable("post-id") Long id,
+                                                              ModifyRequest request) {
+        postService.postChange(id, request);
+        return ResponseEntity.ok().build();
+    }
 }
