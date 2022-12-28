@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
@@ -21,10 +22,7 @@ import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -111,16 +109,29 @@ class PostServiceTest {
         Post post = beforeEach();
         PostDto.PostDetailDto postDetailDto = postService.productDetail(post.getId());
 
-        postLikesService.clickPostLikes(Integer.toUnsignedLong(1), post.getId());
+        postLikesService.clickPostLikes(Integer.toUnsignedLong(1), postDetailDto.getId());
 
         Optional<PostLikes> postlikes = postLikesService.findOne(Integer.toUnsignedLong(1), post.getId());
         assertNotNull(postlikes.get());
+
+        Optional<Post> findPost = postRepository.findById(postDetailDto.getId());
+        assertEquals(1, findPost.get().getLikes().size());
     }
 
     @Test
     @DisplayName("좋아요 취소 테스트")
     public void 좋아요_취소() throws Exception {
+        Post post = beforeEach();
+        PostDto.PostDetailDto postDetailDto = postService.productDetail(post.getId());
 
+        postLikesService.clickPostLikes(Integer.toUnsignedLong(1), postDetailDto.getId());
+        postLikesService.clickPostLikes(Integer.toUnsignedLong(1), postDetailDto.getId()); // 한번 더 클릭
+
+        Optional<PostLikes> postlikes = postLikesService.findOne(Integer.toUnsignedLong(1), post.getId());
+        assertFalse(postlikes.isPresent());
+
+        Optional<Post> findPost = postRepository.findById(postDetailDto.getId());
+        assertEquals(0, findPost.get().getLikes().size());
     }
 
     @Test
