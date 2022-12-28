@@ -25,7 +25,7 @@ public class PostLikes {
     // 연관관계 메서드
     public void setPost(Post post) { // 좋아요 횟수 count
         this.post = post;
-        //post.getLikes().add(this);
+        post.getLikes().add(this);
     }
 
     // 생성 메서드
