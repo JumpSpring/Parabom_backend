@@ -9,6 +9,8 @@ import taveSpring.parabom.Domain.Image;
 import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
 import taveSpring.parabom.Repository.ImageRepository;
+import taveSpring.parabom.Repository.MemberRepository;
+import taveSpring.parabom.Repository.PostLikesRepository;
 import taveSpring.parabom.Repository.PostRepository;
 
 import javax.transaction.Transactional;
@@ -16,20 +18,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
+    private final MemberRepository memberRepository;
     private final PostRepository postRepository;
     private final PostImageService postImageService;
     private final ImageRepository imageRepository;
+    private final PostLikesRepository postLikesRepository;
 
     /*게시물 상세조회*/
     @Transactional
     public PostDto.PostDetailDto productDetail(Long id) {
-
         // 이미지
         List<Image> imageList = imageRepository.findByIdBy(id);
         List<ImageDto.ImageInfoDto> imageDtoList = new ArrayList<>();
@@ -43,8 +45,10 @@ public class PostService {
         Post entity = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
         PostDto.PostDetailDto detailDto = new PostDto.PostDetailDto(entity);
         detailDto.setImageDtoList(imageDtoList);
-        System.out.print("[Info][productDetail SERVICE] detailDto.getImageInfoDtos() : " + detailDto.getImageDtoList());
-        System.out.print("[Info][productDetail SERVICE] imageDtoList.get(0) : " + imageDtoList.get(0));
+        Optional<Member> member = memberRepository.findByEmail(entity.getMember().getEmail());
+        detailDto.setMember(member.get());
+        //System.out.print("[Info][productDetail SERVICE] detailDto.getImageInfoDtos() : " + detailDto.getImageDtoList());
+        //System.out.print("[Info][productDetail SERVICE] imageDtoList.get(0) : " + imageDtoList.get(0));
         return detailDto;
     }
 
@@ -59,11 +63,8 @@ public class PostService {
         // 이미지 등록
         for(int i=0 ; i<imageList.size(); i++){
             Image image = new Image();
-
             postDto.setImage(image);
             image.setPost(post);
-            //Post postE = new Post();
-            //postE.addImages(image);
             postImageService.saveImage(image, imageList.get(i));
             System.out.println("[Info][productCreate SERVICE] image.getPath() : " + image.getPath());
         }
@@ -91,5 +92,34 @@ public class PostService {
 //        return postRepository.findAllListOfLiked(memberId).stream()
 //                .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());
 //    }
+
+    /* 찜한 목록에 추가
+    @Transactional
+    public Long addHeart(PostDto.AddHeartDto addHeartDto, String email) {
+
+        // 현재 로그인한 회원
+        Member member = memberRepository.findByEmailBy(email);
+        // 찜하려는 게시물
+        Post post1 = postRepository.findById(addHeartDto.getId()).orElseThrow(EntityNotFoundException::new);
+
+        // 찜목록 없을 경우 경우 새로 생성
+        PostLikes postLikes = postLikesRepository.findByMemberId(member.getId());
+        if(postLikes == null) {
+            postLikes.createPostLikes(member, post1);
+            postLikesRepository.save(postLikes);
+        }
+
+        // 이미 찜 목록에 추가되어있는지 확인 후 추가
+        Post post2 = postLikesRepository.findByIdAndMemberId(post1.getId(), member.getId());
+        if( post2 != postLikes.getPost() ) {
+            // 새로 추가
+            postLikes.setPost(post2);
+            return post2.getId();
+        } else {
+            // 이미 존재
+
+        }
+
+    }*/
 
 }
