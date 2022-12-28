@@ -1,9 +1,6 @@
 package taveSpring.parabom.Controller.Dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +12,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -28,7 +26,7 @@ public class PostDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class PostDetailDto {
-        //private Long memberId;
+        private Member member;
 
         private Long id;
         private String name;
@@ -53,11 +51,7 @@ public class PostDto {
         }
 
         public PostDetailDto(Post post) {
-            ImageDto.ImageInfoDto imageInfoDto = new ImageDto.ImageInfoDto();
-            //listDtoToListEntity(imageDtoList); // List<image entity> -> List<imageInfoDto>
-            //this.memberId = entity.getMember().getId();
-            //this.getMember().getNickname();
-            //this.getMember().getProfile();
+            this.member = post.getMember();
             this.id = post.getId();
             this.name = post.getName();
             this.price = post.getPrice();
@@ -71,10 +65,12 @@ public class PostDto {
             this.title = post.getTitle();
             this.content = post.getContent();
             this.date = post.getDate();
+
+            ImageDto.ImageInfoDto imageInfoDto = new ImageDto.ImageInfoDto();
             for(int i=0; i<imageDtoList.size(); i++) {
                 imageInfoDto = imageDtoList.get(i);
             }
-            //this.imageDtoList = imageInfoDto.getPath();
+
         }
 
     }
@@ -83,7 +79,11 @@ public class PostDto {
     @Getter @Setter
     @AllArgsConstructor
     @NoArgsConstructor
+    @Builder
     public static class PostCreateDto {
+        //private Member member;
+
+        private Long id;
         private String name;
         private int price;
         private Integer finOrIng;
@@ -106,23 +106,24 @@ public class PostDto {
 
         public Post toEntity() {
             images.add(image);
-           return Post.builder().name(name).price(price).finOrIng(finOrIng)
+           return Post.builder().id(id).name(name).price(price).finOrIng(finOrIng)
                    .datePurchased(datePurchased).openOrNot(openOrNot)
                    .status(status).directOrDel(directOrDel).category(category).hashtag(hashtag)
                    .title(title).content(content).date(date)
                    .images(images)
+                   //.member(member)
                    .build();
         }
 
     }
 
-    /*게시물 찜 목록에 추가*/
+    /* 찜한 목록에 추가 */
     @Getter @Setter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class AddHeartDto {
         private Long id;
-        private String memberId;
+        private Member member;
     }
 
 }
