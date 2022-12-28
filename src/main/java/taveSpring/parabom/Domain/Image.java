@@ -16,12 +16,12 @@ public class Image {
 
     @Id
     @Column(name = "image_id")
-    @GeneratedValue()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /* Post 매핑*/
-    @ManyToOne
-    @JoinColumn(name = "id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "post_id")
     private Post post;
 
     /* Member 매핑*/
