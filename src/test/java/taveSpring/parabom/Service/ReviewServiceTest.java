@@ -37,9 +37,9 @@ public class ReviewServiceTest {
     public void 후기_등록() {
         memberRepository.save(member1);
         memberRepository.save(member2);
-        ReviewCreateDto dto = createDto(member1.getId(), member2.getId(), "판매자", "iphone13", "감사합니다!", 5);
+        ReviewCreateDto dto = createDto(member1.getId(), "판매자", "iphone13", "감사합니다!", 5);
 
-        IdResponse idResponse = reviewService.saveReview(dto);
+        IdResponse idResponse = reviewService.saveReview(dto, member2.getId());
         Review findReview = reviewRepository.findById(idResponse.getId()).orElseThrow();
 
         assertEquals(member1, findReview.getSender());
@@ -54,8 +54,8 @@ public class ReviewServiceTest {
     public void 후기_수정() {
         memberRepository.save(member1);
         memberRepository.save(member2);
-        ReviewCreateDto createDto = createDto(member1.getId(), member2.getId(), "판매자", "iphone13", "감사합니다!", 5);
-        IdResponse idResponse = reviewService.saveReview(createDto);
+        ReviewCreateDto createDto = createDto(member1.getId(), "판매자", "iphone13", "감사합니다!", 5);
+        IdResponse idResponse = reviewService.saveReview(createDto, member2.getId());
         ReviewModifyDto modifyDto = new ReviewModifyDto("iphone13 mini", "감사합니다!!!", 4);
 
         reviewService.updateReview(idResponse.getId(), modifyDto);
@@ -71,8 +71,8 @@ public class ReviewServiceTest {
     public void 후기_삭제() {
         memberRepository.save(member1);
         memberRepository.save(member2);
-        ReviewCreateDto dto = createDto(member1.getId(), member2.getId(), "판매자", "iphone13", "감사합니다!", 5);
-        IdResponse idResponse = reviewService.saveReview(dto);
+        ReviewCreateDto dto = createDto(member1.getId(), "판매자", "iphone13", "감사합니다!", 5);
+        IdResponse idResponse = reviewService.saveReview(dto, member2.getId());
         int beforeDeleteSendReviewSize = member1.getSendReviews().size();
         int beforeDeleteMyReviewSize = member2.getMyReviews().size();
 
@@ -85,8 +85,8 @@ public class ReviewServiceTest {
         assertEquals(0, member2.getAvgStarPoint());
     }
 
-    public ReviewCreateDto createDto(Long senderId, Long recipientId, String senderType, String itemName, String text, Integer starPoint) {
-        return new ReviewCreateDto(senderId, recipientId, senderType, itemName, text, starPoint);
+    public ReviewCreateDto createDto(Long senderId, String senderType, String itemName, String text, Integer starPoint) {
+        return new ReviewCreateDto(senderId, senderType, itemName, text, starPoint);
     }
 
     private Member getMember(String email, String password, String nickname, String profile, String address) {

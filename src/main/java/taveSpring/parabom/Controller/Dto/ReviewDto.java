@@ -19,8 +19,6 @@ public class ReviewDto {
 
         @NotNull
         private Long senderId;
-        @NotNull
-        private Long recipientId;
         @NotBlank
         private String senderType; //"판매자" 또는 "구매자"만 저장 가능
 
