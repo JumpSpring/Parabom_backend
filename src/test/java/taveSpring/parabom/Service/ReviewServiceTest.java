@@ -5,8 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import taveSpring.parabom.Controller.Dto.ReviewDto;
 import taveSpring.parabom.Controller.Dto.ReviewDto.IdResponse;
 import taveSpring.parabom.Controller.Dto.ReviewDto.ReviewCreateDto;
+import taveSpring.parabom.Controller.Dto.ReviewDto.ReviewModifyDto;
 import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Review;
 import taveSpring.parabom.Domain.ReviewSenderType;
@@ -46,6 +48,23 @@ public class ReviewServiceTest {
         assertEquals("iphone13", findReview.getItemName());
         assertEquals("감사합니다!", findReview.getText());
         assertEquals(5, findReview.getStarPoint());
+    }
+
+    @Test
+    public void 후기_수정() {
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        ReviewCreateDto createDto = createDto(member1.getId(), member2.getId(), "판매자", "iphone13", "감사합니다!", 5);
+        IdResponse idResponse = reviewService.saveReview(createDto);
+        ReviewModifyDto modifyDto = new ReviewModifyDto("iphone13 mini", "감사합니다!!!", 4);
+
+        reviewService.updateReview(idResponse.getId(), modifyDto);
+        Review findReview = reviewRepository.findById(idResponse.getId()).orElseThrow();
+
+        assertEquals("iphone13 mini", findReview.getItemName());
+        assertEquals("감사합니다!!!", findReview.getText());
+        assertEquals(4, findReview.getStarPoint());
+        assertEquals(4, member2.getAvgStarPoint());
     }
 
     @Test
