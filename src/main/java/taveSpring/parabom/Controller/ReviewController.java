@@ -13,19 +13,19 @@ import static taveSpring.parabom.Controller.Dto.ReviewDto.*;
 
 @RestController
 @RequiredArgsConstructor
-//@RequestMapping("/review")
 public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("/review")
+    @PostMapping("/member/{memberId}/review")
     public ResponseEntity<? extends BasicResponse> create(
-            @Valid @RequestBody ReviewCreateDto dto) {
+            @Valid @RequestBody ReviewCreateDto dto,
+            @PathVariable("memberId") Long recipientId) {
         return ResponseEntity.ok()
-                .body(new CommonResponse<IdResponse>(reviewService.saveReview(dto)));
+                .body(new CommonResponse<IdResponse>(reviewService.saveReview(dto, recipientId)));
     }
 
-    @PatchMapping("/review/{reviewId}")
+    @PatchMapping("/member/{memberId}/review/{reviewId}")
     public ResponseEntity<? extends BasicResponse> update(
             @PathVariable Long reviewId,
             @RequestBody ReviewModifyDto dto) {
@@ -33,7 +33,7 @@ public class ReviewController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/review/{reviewId}")
+    @DeleteMapping("/member/{memberId}/review/{reviewId}")
     public ResponseEntity<? extends BasicResponse> delete(
             @PathVariable Long reviewId) {
         reviewService.deleteReview(reviewId);
