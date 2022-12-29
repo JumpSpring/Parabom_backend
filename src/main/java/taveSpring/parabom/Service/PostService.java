@@ -93,33 +93,5 @@ public class PostService {
 //                .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());
 //    }
 
-    /* 찜한 목록에 추가
-    @Transactional
-    public Long addHeart(PostDto.AddHeartDto addHeartDto, String email) {
-
-        // 현재 로그인한 회원
-        Member member = memberRepository.findByEmailBy(email);
-        // 찜하려는 게시물
-        Post post1 = postRepository.findById(addHeartDto.getId()).orElseThrow(EntityNotFoundException::new);
-
-        // 찜목록 없을 경우 경우 새로 생성
-        PostLikes postLikes = postLikesRepository.findByMemberId(member.getId());
-        if(postLikes == null) {
-            postLikes.createPostLikes(member, post1);
-            postLikesRepository.save(postLikes);
-        }
-
-        // 이미 찜 목록에 추가되어있는지 확인 후 추가
-        Post post2 = postLikesRepository.findByIdAndMemberId(post1.getId(), member.getId());
-        if( post2 != postLikes.getPost() ) {
-            // 새로 추가
-            postLikes.setPost(post2);
-            return post2.getId();
-        } else {
-            // 이미 존재
-
-        }
-
-    }*/
 
 }
