@@ -1,26 +1,19 @@
 package taveSpring.parabom.Service;
 
-import org.assertj.core.util.DateUtil;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import taveSpring.parabom.Controller.Dto.PostDto;
 import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
 import taveSpring.parabom.Domain.PostLikes;
 import taveSpring.parabom.Repository.MemberRepository;
-import taveSpring.parabom.Repository.PostLikesRepository;
 import taveSpring.parabom.Repository.PostRepository;
 
 import javax.transaction.Transactional;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -137,6 +130,16 @@ class PostServiceTest {
     @Test
     @DisplayName("내 찜 목록 조회 테스트")
     public void 찜한_목록_조회() throws Exception {
+        Post post = beforeEach();
+        PostDto.PostDetailDto postDetailDto = postService.productDetail(post.getId());
 
+        postLikesService.clickPostLikes(Integer.toUnsignedLong(1), postDetailDto.getId());
+
+        List<PostDto.PostDetailDto> allPostInfoLiked = postService.getAllPostInfoLiked(Integer.toUnsignedLong(1));
+        PostDto.PostDetailDto dto = allPostInfoLiked.get(0);
+
+        assertEquals("ps5", dto.getName());
+        assertEquals(500000, dto.getPrice());
+        assertEquals("게임기", dto.getHashtag());
     }
 }
