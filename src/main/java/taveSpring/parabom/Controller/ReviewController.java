@@ -12,19 +12,19 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/review")
+//@RequestMapping("/review")
 public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping()
+    @PostMapping("/review")
     public ResponseEntity<? extends BasicResponse> create(
             @Valid @RequestBody ReviewDto.ReviewCreateDto dto) {
         return ResponseEntity.ok()
                 .body(new CommonResponse<ReviewDto.IdResponse>(reviewService.saveReview(dto)));
     }
 
-    @DeleteMapping("/{reviewId}")
+    @DeleteMapping("/review/{reviewId}")
     public ResponseEntity<? extends BasicResponse> delete(@PathVariable Long reviewId) {
         reviewService.deleteReview(reviewId);
         return ResponseEntity.ok().build();

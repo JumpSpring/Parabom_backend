@@ -37,6 +37,10 @@ public class ReviewService {
     public void deleteReview(Long id) {
         Review review = reviewRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("후기 정보가 없습니다."));
+
+        Member recipient = review.getRecipient();
+        recipient.deleteMyReview(review);
+
         reviewRepository.delete(review);
     }
 }
