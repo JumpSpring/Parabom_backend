@@ -10,6 +10,7 @@ import taveSpring.parabom.Controller.Response.BasicResponse;
 import taveSpring.parabom.Controller.Response.CommonResponse;
 import taveSpring.parabom.Service.PostService;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -19,16 +20,15 @@ public class PostController {
 
     private final PostService postService;
 
-    /*게시물 상세조회*/
-    // TODO : 멤버 닉네임 & 프사 받아오기
-    // 내 게시물 조회와 타인 게시물 조회 따로 구현?
+    /* 게시물 상세조회*/
+    // TODO : Member 객체 넣기 완료
     @GetMapping(path = "/productDetail")
     public ResponseEntity<? extends BasicResponse> productDetail(@RequestParam(value="id") Long id) throws Exception {
         return ResponseEntity.ok(new CommonResponse<PostDto.PostDetailDto>(postService.productDetail(id)));
     }
 
     /*게시물 등록*/
-    // TODO : 사진 등록, 로그인 정보 받아오기
+    // TODO : 로그인 정보 받아오기 - 게시물 내용과 이미지에 member_id 적용
     @PostMapping(path = "/create")
     public ResponseEntity<? extends BasicResponse> create(@RequestPart("dto") PostDto.PostCreateDto dto,
                                                           @RequestPart("image") List<MultipartFile> imageFileList,
@@ -42,11 +42,5 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    /*게시물 찜 목록에 추가
-    @PostMapping(path = "/addHeart/{id}}")
-    public ResponseEntity<? extends BasicResponse> addHeart(@RequestParam(name = "id") Long id) throws Exception {
-        postService.addHeart(id);
-        return ResponseEntity.ok(new CommonResponse<PostDto.AddHeartDto>(postService.addHeart(id)));
-    }*/
 
 }
