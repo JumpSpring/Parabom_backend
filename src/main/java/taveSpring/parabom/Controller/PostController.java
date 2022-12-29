@@ -22,7 +22,6 @@ public class PostController {
 
     /* 게시물 상세조회*/
     // TODO : Member 객체 넣기 완료
-    // TODO : 내 게시물 상세조회와 타 게시물 상세조회 분리
     @GetMapping(path = "/productDetail")
     public ResponseEntity<? extends BasicResponse> productDetail(@RequestParam(value="id") Long id) throws Exception {
         return ResponseEntity.ok(new CommonResponse<PostDto.PostDetailDto>(postService.productDetail(id)));
@@ -43,14 +42,5 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    /*찜한 목록에 추가
-    @PostMapping(path = "/addHeart")
-    public ResponseEntity<? extends BasicResponse> addHeart(@RequestBody PostDto.AddHeartDto addHeartDto,
-                                                            Principal principal) throws Exception {
-
-        String email = principal.getName();
-        postService.addHeart(addHeartDto, email);
-        return ResponseEntity.ok(new CommonResponse<PostDto.AddHeartDto>(postService.addHeart(addHeartDto, email)));
-    }*/
 
 }
