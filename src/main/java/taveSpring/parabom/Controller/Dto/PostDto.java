@@ -1,11 +1,9 @@
 package taveSpring.parabom.Controller.Dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.modelmapper.ModelMapper;
+import org.springframework.web.multipart.MultipartFile;
 import taveSpring.parabom.Domain.Image;
 import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
@@ -14,6 +12,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 public class PostDto {
@@ -26,8 +26,7 @@ public class PostDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class PostDetailDto {
-        //private String member;
-        //private byte[] images;
+        private Member member;
 
         private Long id;
         private String name;
@@ -43,31 +42,48 @@ public class PostDto {
         private String content;
         private Timestamp date;
 
-        public PostDetailDto(Post entity) {
-            //this.member = entity.getMember().getNickname();
-            //this.member = entity.getMember().getProfile();
-            //this.images = entity.getImages().getImage();
+        // 이미지 정보를 저장하는 리스트
+        private List<ImageDto.ImageInfoDto> imageDtoList = new ArrayList<>();
 
-            this.id = entity.getId();
-            this.name = entity.getName();
-            this.price = entity.getPrice();
-            this.finOrIng = entity.getFinOrIng();
-            this.datePurchased = entity.getDatePurchased();
-            this.openOrNot = entity.getOpenOrNot();
-            this.status = entity.getStatus();
-            this.openOrNot = entity.getOpenOrNot();
-            this.directOrDel = entity.getDirectOrDel();
-            this.hashtag = entity.getHashtag();
-            this.title = entity.getTitle();
-            this.content = entity.getContent();
-            this.date = entity.getDate();
+        public static PostDetailDto of(Post post){
+            return modelMapper.map(post, PostDetailDto.class);
+            // entity 를 파라미터로 받아서 dto 로 반환함
         }
+
+        public PostDetailDto(Post post) {
+            this.member = post.getMember();
+            this.id = post.getId();
+            this.name = post.getName();
+            this.price = post.getPrice();
+            this.finOrIng = post.getFinOrIng();
+            this.datePurchased = post.getDatePurchased();
+            this.openOrNot = post.getOpenOrNot();
+            this.status = post.getStatus();
+            this.openOrNot = post.getOpenOrNot();
+            this.directOrDel = post.getDirectOrDel();
+            this.hashtag = post.getHashtag();
+            this.title = post.getTitle();
+            this.content = post.getContent();
+            this.date = post.getDate();
+
+            ImageDto.ImageInfoDto imageInfoDto = new ImageDto.ImageInfoDto();
+            for(int i=0; i<imageDtoList.size(); i++) {
+                imageInfoDto = imageDtoList.get(i);
+            }
+
+        }
+
     }
 
+    /*게시물 등록*/
     @Getter @Setter
     @AllArgsConstructor
     @NoArgsConstructor
+    @Builder
     public static class PostCreateDto {
+        //private Member member;
+
+        private Long id;
         private String name;
         private int price;
         private Integer finOrIng;
@@ -77,59 +93,37 @@ public class PostDto {
         private String directOrDel;
         private String category;
         private String hashtag;
-        //private Image images;
 
         private String title;
         private String content;
         private Timestamp date;
 
-        // 상품의 이미지 아이디를 저장하는 리스트
-        // 상품 등록 전에는 이미지가 없으니까 비어있음
-        // 수정할 때 이미지 아이디 저장해둘 용도
-        private List<Long> imageId = new ArrayList<>();
+        private Image image;
+        private List<Image> images = new ArrayList<>();
 
-        public Post createPost(){
-            return modelMapper.map(this, Post.class);
-            // this_entity 를 dto로 반환
-        }
-
-        public static PostCreateDto of(Post post){
-            return modelMapper.map(post, PostCreateDto.class);
-            // entity 를 파라미터로 받아서 dto 로 반환
-        }
+        // 이미지 정보를 저장하는 리스트
+        private List<ImageDto.ImageInfoDto> imageDtoList = new ArrayList<>();
 
         public Post toEntity() {
-           return Post.builder().name(name).price(price).finOrIng(finOrIng)
-                   .datePurchased(datePurchased).date(date).openOrNot(openOrNot)
+            images.add(image);
+           return Post.builder().id(id).name(name).price(price).finOrIng(finOrIng)
+                   .datePurchased(datePurchased).openOrNot(openOrNot)
                    .status(status).directOrDel(directOrDel).category(category).hashtag(hashtag)
-                   .title(title).content(content).date(date).build();
+                   .title(title).content(content).date(date)
+                   .images(images)
+                   //.member(member)
+                   .build();
         }
 
     }
 
-    @Getter @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class PostImageDto {
-        private Long id;
-        private String path;
-        private String name;
-        private byte[] caption;
-
-        public static PostImageDto of(Image image) {
-            return modelMapper.map(image,PostImageDto.class);
-            // entity 를 파라미터로 받아서 dto 로 반환함
-        }
-
-    }
-
-    /*게시물 찜 목록에 추가*/
+    /* 찜한 목록에 추가 */
     @Getter @Setter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class AddHeartDto {
         private Long id;
-        private String memberId;
+        private Member member;
     }
 
 }
