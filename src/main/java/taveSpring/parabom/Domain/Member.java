@@ -51,6 +51,7 @@ public class Member {
             this.address = address;
     }
 
+    /*후기 관련 비즈니스 메서드*/
     public void addMyReviews(Review review) {
         double totalStarPoint = avgStarPoint * myReviews.size();
         totalStarPoint += review.getStarPoint();
@@ -61,6 +62,12 @@ public class Member {
 
     public void addSendReviews(Review review) {
         sendReviews.add(review);
+    }
+
+    public void updateStarPoint(Integer oldStarPoint, Integer newStarPoint) {
+        double totalStarPoint = avgStarPoint * myReviews.size();
+        totalStarPoint += (newStarPoint - oldStarPoint);
+        avgStarPoint = totalStarPoint / myReviews.size();
     }
 
     public void deleteMyReview(Review review) {

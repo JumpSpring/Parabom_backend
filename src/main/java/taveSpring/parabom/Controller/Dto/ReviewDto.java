@@ -50,4 +50,14 @@ public class ReviewDto {
             return new IdResponse(review.getId());
         }
     }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReviewModifyDto {
+        private String itemName;
+        private String text;
+        @Range(min = 1, max = 5)
+        private Integer starPoint;
+    }
 }
