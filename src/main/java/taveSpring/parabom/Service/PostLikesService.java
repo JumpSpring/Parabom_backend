@@ -9,6 +9,7 @@ import taveSpring.parabom.Repository.MemberRepository;
 import taveSpring.parabom.Repository.PostLikesRepository;
 import taveSpring.parabom.Repository.PostRepository;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -23,6 +24,7 @@ public class PostLikesService {
         return postLikesRepository.findOneByMemberAndPost(memberId, postId);
     }
 
+    @Transactional
     public void clickPostLikes(Long memberId, Long postId) {
         Optional<PostLikes> postLikes = postLikesRepository.findOneByMemberAndPost(memberId, postId);
         if(postLikes.isPresent()) {
@@ -34,17 +36,18 @@ public class PostLikesService {
         }
     }
 
-    private void savePostLikes(Long memberId, Long postId) {
+    @Transactional
+    public void savePostLikes(Long memberId, Long postId) {
         Optional<Member> member = memberRepository.findById(memberId);
         Optional<Post> post = postRepository.findById(postId);
         PostLikes postLikes = PostLikes.createPostLikes(member.get(), post.get());
         postLikesRepository.save(postLikes);
-        //post.get().getLikes().add(postLikes);
     }
 
-    private void deletePostLikes(PostLikes postLikes, Long postId) {
+    @Transactional
+    public void deletePostLikes(PostLikes postLikes, Long postId) {
         Optional<Post> post = postRepository.findById(postId);
-        //post.get().getLikes().remove(postLikes);
+        post.get().getLikes().remove(postLikes);
         postLikesRepository.delete(postLikes);
     }
 }
