@@ -40,6 +40,8 @@ public class ReviewService {
 
         Member recipient = review.getRecipient();
         recipient.deleteMyReview(review);
+        Member sender = review.getSender();
+        sender.deleteSendReview(review);
 
         reviewRepository.delete(review);
     }
