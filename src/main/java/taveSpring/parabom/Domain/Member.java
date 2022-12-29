@@ -23,11 +23,11 @@ public class Member {
 
     //받은 리뷰 리스트
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)
-    private List<Review> myReviews = new ArrayList<>();
+    private final List<Review> myReviews = new ArrayList<>();
 
     //보낸 리뷰 리스트
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
-    private List<Review> sendReviews = new ArrayList<>();
+    private final List<Review> sendReviews = new ArrayList<>();
 
     //받은 리뷰들의 평균 별점
     @Column(name = "avg_star_point")
@@ -66,12 +66,17 @@ public class Member {
     public void deleteMyReview(Review review) {
         double totalStarPoint = avgStarPoint * myReviews.size();
         totalStarPoint -= review.getStarPoint();
+        myReviews.remove(review);
 
-        if (myReviews.size() > 1) {
-            avgStarPoint = totalStarPoint / (myReviews.size() - 1);
+        if (myReviews.size() > 0) {
+            avgStarPoint = totalStarPoint / myReviews.size();
         }
         else {
             avgStarPoint = 0.0;
         }
+    }
+
+    public void deleteSendReview(Review review) {
+        sendReviews.remove(review);
     }
 }
