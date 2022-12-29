@@ -62,7 +62,17 @@ public class Review {
         sender.addSendReviews(this);
     }
 
-//    public void update(String itemName, String text, String starPoint) {
-//        this.updatedAt = LocalDateTime.now();
-//    }
+    public void update(String itemName, String text, Integer starPoint) {
+        if (itemName != null) {
+            this.itemName = itemName;
+        }
+        if (text != null) {
+            this.text = text;
+        }
+        if (starPoint != null) {
+            recipient.updateStarPoint(this.starPoint, starPoint);
+            this.starPoint = starPoint;
+        }
+        this.updatedAt = LocalDateTime.now();
+    }
 }
