@@ -48,6 +48,24 @@ public class ReviewServiceTest {
         assertEquals(5, findReview.getStarPoint());
     }
 
+    @Test
+    public void 후기_삭제() {
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        ReviewCreateDto dto = createDto(member1.getId(), member2.getId(), "판매자", "iphone13", "감사합니다!", 5);
+        IdResponse idResponse = reviewService.saveReview(dto);
+        int beforeDeleteSendReviewSize = member1.getSendReviews().size();
+        int beforeDeleteMyReviewSize = member2.getMyReviews().size();
+
+        reviewService.deleteReview(idResponse.getId());
+        int afterDeleteSendReviewSize = member1.getSendReviews().size();
+        int afterDeleteMyReviewSize = member2.getMyReviews().size();
+
+        assertEquals(1, beforeDeleteSendReviewSize - afterDeleteSendReviewSize);
+        assertEquals(1, beforeDeleteMyReviewSize - afterDeleteMyReviewSize);
+        assertEquals(0, member2.getAvgStarPoint());
+    }
+
     public ReviewCreateDto createDto(Long senderId, Long recipientId, String senderType, String itemName, String text, Integer starPoint) {
         return new ReviewCreateDto(senderId, recipientId, senderType, itemName, text, starPoint);
     }
