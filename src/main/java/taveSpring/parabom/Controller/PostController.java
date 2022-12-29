@@ -34,7 +34,7 @@ public class PostController {
                                                           @RequestPart("image") List<MultipartFile> imageFileList,
                                                           Model model) throws Exception {
         try { // 상품 저장 로직 호출
-            postService.postCreate(dto, imageFileList);
+            //postService.postCreate(dto, imageFileList);
         }
         catch (Exception e){
             model.addAttribute("errorMessage : ", "게시물 등록 중 에러 발생!");
