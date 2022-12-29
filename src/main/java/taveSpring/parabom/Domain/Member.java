@@ -62,4 +62,16 @@ public class Member {
     public void addSendReviews(Review review) {
         sendReviews.add(review);
     }
+
+    public void deleteMyReview(Review review) {
+        double totalStarPoint = avgStarPoint * myReviews.size();
+        totalStarPoint -= review.getStarPoint();
+
+        if (myReviews.size() > 1) {
+            avgStarPoint = totalStarPoint / (myReviews.size() - 1);
+        }
+        else {
+            avgStarPoint = 0.0;
+        }
+    }
 }
