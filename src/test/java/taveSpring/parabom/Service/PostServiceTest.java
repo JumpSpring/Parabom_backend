@@ -1,30 +1,19 @@
 package taveSpring.parabom.Service;
 
-import org.assertj.core.util.DateUtil;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.web.multipart.MultipartFile;
-import taveSpring.parabom.Controller.Dto.ImageDto;
 import taveSpring.parabom.Controller.Dto.PostDto;
-import taveSpring.parabom.Domain.Image;
 import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
-
-import taveSpring.parabom.Repository.ImageRepository;
+import taveSpring.parabom.Domain.PostLikes;
 import taveSpring.parabom.Repository.MemberRepository;
-import taveSpring.parabom.Repository.PostLikesRepository;
 import taveSpring.parabom.Repository.PostRepository;
 
 import javax.transaction.Transactional;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -34,33 +23,19 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class PostServiceTest {
 
-    @Autowired
-    PostService postService;
+    @Autowired PostService postService;
     @Autowired
     PostRepository postRepository;
     @Autowired
     MemberRepository memberRepository;
     @Autowired
     PostLikesService postLikesService;
-    @Autowired
-    ImageRepository imageRepository;
-    @Autowired
-    PostImageService postImageService;
 
-    public Post beforeEach() throws Exception { // post 생성하여 저장
+    public Post beforeEach() { // post 생성하여 저장
         Optional<Member> member = memberRepository.findById(Integer.toUnsignedLong(1));
-
         Post post = getPost("ps5", 500000, 0, getDate(2018, 8, 15),
                 0, "good", "direct", "전자제품", "게임기", "ps5",
                 "ps5", member.get());
-
-        // 이미지 추가
-        Image image = new Image(1L, post, member.get(), "fileName.jpg", "oriFileName.jpg" ,
-                "D:\\22-12-Parabom-Project-new");
-        List<Image> imageList = new ArrayList<>();
-        imageList.add(image);
-        post.setImages(imageList);
-
         return postRepository.save(post);
     }
 
@@ -80,50 +55,91 @@ class PostServiceTest {
     @Test
     @DisplayName("게시글 상세조회 테스트")
     public void 게시글_상세조회() throws Exception {
-        // given
         Post post = beforeEach();
 
-        // when
         PostDto.PostDetailDto postDetailDto = postService.productDetail(post.getId());
 
-        // then
         assertEquals(post.getName(), postDetailDto.getName());
         assertEquals(post.getPrice(), postDetailDto.getPrice());
         assertEquals(post.getTitle(), postDetailDto.getTitle());
         assertEquals(post.getContent(), postDetailDto.getContent());
-        assertEquals(post.getMember().getId(), postDetailDto.getMember().getId());
-        //assertEquals(post.getImages(), postDetailDto.getImageDtoList()); -> 해결
     }
 
-    /*@Test
+    @Test
     @DisplayName("게시글 등록 테스트")
     public void 게시글_등록() throws Exception {
-
-        // given
         PostDto.PostCreateDto postCreateDto = PostDto.PostCreateDto.builder()
                 .name("ps4").price(300000).finOrIng(0).datePurchased(getDate(2016, 1, 1))
                 .date(Timestamp.valueOf(LocalDateTime.now())).openOrNot(0).status("good")
                 .directOrDel("direct").category("전자제품").hashtag("게임기").title("ps4")
                 .content("ps4").build();
 
-        Image image = Image.builder().fileName("fileName.jpg").oriFileName("oriFileName.jpg")
-                .path("D:\\22-12-Parabom-Project-new").build();
+        Long postId = postService.postCreate(postCreateDto);
 
-        MultipartFile mFile = new MockMultipartFile(image.getFileName(), image.getOriFileName().getBytes());
-        List<MultipartFile> multipartFiles = new ArrayList<>();
-        multipartFiles.add(mFile);
-
-        // when
-        Long postId = postService.postCreate(postCreateDto, multipartFiles);
-
-        // then
         PostDto.PostDetailDto postDetailDto = postService.productDetail(postId);
         assertEquals("ps4", postDetailDto.getName());
         assertEquals(300000, postDetailDto.getPrice());
         assertEquals("게임기", postDetailDto.getHashtag());
-        //assertEquals(, postDetailDto.getMember());
-        //assertEquals(, postDetailDto.getImageDtoList());
-    }*/
+    }
 
+    @Test
+    @DisplayName("카테고리 조회 테스트")
+    public void 카테고리_조회() throws Exception {
+        Post post = beforeEach();
+        List<PostDto.PostDetailDto> postDetailDtos = postService.getAllPostInfoByCategory("전자제품");
 
+        assertEquals(1, postDetailDtos.size());
+
+        PostDto.PostDetailDto postDetailDto = postDetailDtos.get(0);
+        assertEquals("ps5", postDetailDto.getName());
+        assertEquals(500000, postDetailDto.getPrice());
+        assertEquals("게임기", postDetailDto.getHashtag());
+    }
+
+    @Test
+    @DisplayName("좋아요 테스트")
+    public void 좋아요() throws Exception {
+        Post post = beforeEach();
+        PostDto.PostDetailDto postDetailDto = postService.productDetail(post.getId());
+
+        postLikesService.clickPostLikes(Integer.toUnsignedLong(1), postDetailDto.getId());
+
+        Optional<PostLikes> postlikes = postLikesService.findOne(Integer.toUnsignedLong(1), post.getId());
+        assertNotNull(postlikes.get());
+
+        Optional<Post> findPost = postRepository.findById(postDetailDto.getId());
+        assertEquals(1, findPost.get().getLikes().size());
+    }
+
+    @Test
+    @DisplayName("좋아요 취소 테스트")
+    public void 좋아요_취소() throws Exception {
+        Post post = beforeEach();
+        PostDto.PostDetailDto postDetailDto = postService.productDetail(post.getId());
+
+        postLikesService.clickPostLikes(Integer.toUnsignedLong(1), postDetailDto.getId());
+        postLikesService.clickPostLikes(Integer.toUnsignedLong(1), postDetailDto.getId()); // 한번 더 클릭
+
+        Optional<PostLikes> postlikes = postLikesService.findOne(Integer.toUnsignedLong(1), post.getId());
+        assertFalse(postlikes.isPresent());
+
+        Optional<Post> findPost = postRepository.findById(postDetailDto.getId());
+        assertEquals(0, findPost.get().getLikes().size());
+    }
+
+    @Test
+    @DisplayName("내 찜 목록 조회 테스트")
+    public void 찜한_목록_조회() throws Exception {
+        Post post = beforeEach();
+        PostDto.PostDetailDto postDetailDto = postService.productDetail(post.getId());
+
+        postLikesService.clickPostLikes(Integer.toUnsignedLong(1), postDetailDto.getId());
+
+        List<PostDto.PostDetailDto> allPostInfoLiked = postService.getAllPostInfoLiked(Integer.toUnsignedLong(1));
+        PostDto.PostDetailDto dto = allPostInfoLiked.get(0);
+
+        assertEquals("ps5", dto.getName());
+        assertEquals(500000, dto.getPrice());
+        assertEquals("게임기", dto.getHashtag());
+    }
 }
