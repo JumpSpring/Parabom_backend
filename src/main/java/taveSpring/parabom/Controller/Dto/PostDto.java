@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.modelmapper.ModelMapper;
+import taveSpring.parabom.Domain.FinOrIng;
 import taveSpring.parabom.Domain.Image;
 import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
@@ -32,7 +33,7 @@ public class PostDto {
         private Long id;
         private String name;
         private int price;
-        private Integer finOrIng;
+        private FinOrIng finOrIng;
         private Date datePurchased;
         private Integer openOrNot;
         private String status;
@@ -70,7 +71,7 @@ public class PostDto {
     public static class PostCreateDto {
         private String name;
         private int price;
-        private Integer finOrIng;
+        private FinOrIng finOrIng;
         private Date datePurchased;
         private Integer openOrNot;
         private String status;
@@ -123,7 +124,7 @@ public class PostDto {
     @Getter @Setter
     @AllArgsConstructor
     public static class ModifyFinOrIngRequest {
-        private Integer finOrIng;
+        private FinOrIng finOrIng;
     }
 
 
