@@ -19,11 +19,11 @@ public class ReviewService {
 
     /*후기 등록*/
     @Transactional
-    public IdResponse saveReview(ReviewCreateDto dto) {
+    public IdResponse saveReview(ReviewCreateDto dto, Long recipientId) {
         Review review = dto.toEntity();
         review.setSenderType(dto.getSenderType());
 
-        Member recipient = memberRepository.findById(dto.getRecipientId())
+        Member recipient = memberRepository.findById(recipientId)
                 .orElseThrow(() -> new IllegalArgumentException("후기를 받는 회원이 존재하지 않습니다."));
         Member sender = memberRepository.findById(dto.getSenderId())
                 .orElseThrow(() -> new IllegalArgumentException("후기를 작성한 회원이 존재하지 않습니다."));
