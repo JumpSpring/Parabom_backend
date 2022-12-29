@@ -20,7 +20,7 @@ public class Image {
     private Long id;
 
     /* Post 매핑*/
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL) // 영속성 전이 추가
     @JoinColumn(name = "post_id")
     private Post post;
 
