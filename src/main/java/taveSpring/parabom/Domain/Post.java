@@ -2,11 +2,8 @@ package taveSpring.parabom.Domain;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.web.multipart.MultipartFile;
-import taveSpring.parabom.Controller.Dto.ImageDto;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -20,7 +17,7 @@ public class Post {
 
     @Id
     @Column(name = "post_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // AUTO_INCREMENT 추가 new
+    @GeneratedValue
     private Long id;
     private String name;
     private int price;
@@ -37,15 +34,15 @@ public class Post {
     @CreationTimestamp
     private Timestamp date;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "post")
     private List<Image> images = new ArrayList<Image>();
 
     @OneToMany(mappedBy = "post")
-    private Set<PostLikes> likes = new HashSet<>();
+    private Set<PostLikes> likes = new HashSet<PostLikes>();
 
     // 연관관계 메서드
     public void addImages(Image image) {
@@ -71,9 +68,7 @@ public class Post {
                 .content(content)
                 .member(member)
                 .date(Timestamp.valueOf(LocalDateTime.now()))
+                .likes(new HashSet<>())
                 .build();
     }
-
-
-
 }
