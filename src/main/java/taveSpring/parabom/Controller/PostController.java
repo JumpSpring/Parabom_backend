@@ -10,7 +10,6 @@ import taveSpring.parabom.Controller.Response.BasicResponse;
 import taveSpring.parabom.Controller.Response.CommonResponse;
 import taveSpring.parabom.Service.PostService;
 
-import javax.persistence.Basic;
 
 import static taveSpring.parabom.Controller.Dto.PostDto.*;
 
@@ -58,14 +57,8 @@ public class PostController {
     /*구매 상태 변경*/
     @PatchMapping(path = "/productState/{post-id}")
     public ResponseEntity<? extends BasicResponse> changeFinOrIng(@PathVariable("post-id") Long id,
-                                                                  ModifyFinOrIngRequest request, Model model) {
-
-        try { // 구매 상태 변경 로직 호출
-            postService.changeFinOrIng(id, request);
-        }
-        catch (Exception e){
-            model.addAttribute("errorMessage : ", "구매 상태 변경 중 오류 발생");
-        }
+                                                                  ModifyFinOrIngRequest request) {
+        postService.modifyFinOrIng(id, request);
         return ResponseEntity.ok().build();
     }
 
@@ -80,7 +73,7 @@ public class PostController {
     @PatchMapping(path = "post/{post-id}")
     public ResponseEntity<? extends BasicResponse> modifyPost(@PathVariable("post-id") Long id,
                                                               ModifyRequest request) {
-        postService.postChange(id, request);
+        postService.postUpdate(id, request);
         return ResponseEntity.ok().build();
     }
 }
