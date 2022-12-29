@@ -55,11 +55,11 @@ public class PostService {
 
     /*구매 상태 변경*/
     @Transactional
-    public void changeFinOrIng(Long id, ModifyFinOrIngRequest request) {
+    public void modifyFinOrIng(Long id, ModifyFinOrIngRequest request) {
         // 상태변경 기능
         Post post = postRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("게시물 정보가 없습니다."));
-        post.updateFinOrIng(request.getFinOrIng());
+        post.modifyFinOrIng(request.getFinOrIng());
     }
 
     /*게시물 삭제*/
@@ -72,7 +72,7 @@ public class PostService {
 
     /*게시물 수정*/
     @Transactional
-    public void postChange(Long id, ModifyRequest request) {
+    public void postUpdate(Long id, ModifyRequest request) {
         Post post = postRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("게시물 정보가 없습니다."));
         post.update(request.getPrice(), request.getOpenOrNot(), request.getStatus(),
