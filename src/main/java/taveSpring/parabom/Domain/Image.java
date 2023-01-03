@@ -1,5 +1,4 @@
 package taveSpring.parabom.Domain;
-
 import lombok.*;
 import taveSpring.parabom.Controller.Dto.ImageDto;
 
@@ -39,6 +38,4 @@ public class Image {
         this.fileName = fileName;
         this.path = path;
     }
-
-
 }
