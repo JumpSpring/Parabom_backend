@@ -4,15 +4,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-<<<<<<< HEAD
-import org.springframework.transaction.annotation.Transactional;
-import taveSpring.parabom.Domain.*;
-import taveSpring.parabom.Repository.MemberRepository;
-import taveSpring.parabom.Repository.PostRepository;
-
-import java.util.*;
-import java.util.Optional;
-=======
 import taveSpring.parabom.Controller.Dto.PostDto;
 import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
@@ -26,36 +17,24 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
->>>>>>> origin/master
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-<<<<<<< HEAD
 public class PostServiceTest {
-=======
-class PostServiceTest {
->>>>>>> origin/master
 
     @Autowired PostService postService;
     @Autowired
     PostRepository postRepository;
     @Autowired
     MemberRepository memberRepository;
-<<<<<<< HEAD
-
-
-    public Post beforeEach() { // post 생성하여 저장
-        Optional<Member> member = memberRepository.findById(Integer.toUnsignedLong(1));
-        Post post = getPost("ps5", 500000, FinOrIng.fin, getDate(2018, 8, 15),
-=======
     @Autowired
     PostLikesService postLikesService;
+
 
     public Post beforeEach() { // post 생성하여 저장
         Optional<Member> member = memberRepository.findById(Integer.toUnsignedLong(1));
         Post post = getPost("ps5", 500000, 0, getDate(2018, 8, 15),
->>>>>>> origin/master
                 0, "good", "direct", "전자제품", "게임기", "ps5",
                 "ps5", member.get());
         return postRepository.save(post);
@@ -67,37 +46,50 @@ class PostServiceTest {
         return new Date(cal.getTimeInMillis());
     }
 
-<<<<<<< HEAD
-    private Post getPost(String name, int price, FinOrIng foi, Date datePurchased, Integer openOrNot,
-=======
+
     private Post getPost(String name, int price, Integer foi, Date datePurchased, Integer openOrNot,
->>>>>>> origin/master
                          String status, String directOrDel, String category, String hashtag,
                          String title, String content, Member member) {
         return Post.createPost(name, price, foi, datePurchased, openOrNot, status, directOrDel,
                 category, hashtag, title, content, member);
     }
-<<<<<<< HEAD
+
     @Test
-    @DisplayName("구매 상태 변경하기")
+    @DisplayName("거래 상태 변경 테스트")
     void changeFinOrIng() {
         Post post = beforeEach();
-        post.modifyFinOrIng(FinOrIng.ing);
-        assertEquals(post.getFinOrIng(), FinOrIng.ing);
+        post.modifyFinOrIng(1);
+        assertEquals(post.getFinOrIng(), 1);
     }
 
     @Test
-    void 게시물수정() {
+    @DisplayName("게시물 수정 테스트")
+    void modifyPost() {
         Post post = beforeEach();
+        post.update(400000, 1, "Very Good", "direct", "기타", "게임기");
+        assertEquals(post.getPrice(), 400000);
+        assertEquals(post.getStatus(), "Very Good");
+        assertEquals(post.getCategory(), "기타");
     }
 
     @Test
-    void 게시물삭제() {
-        Post post = beforeEach();
-    }
+    @DisplayName("게시물 삭제 테스트")
+    void deletePost() {
 
-}
-=======
+        Post post = beforeEach();
+        Member member = post.getMember();
+
+        List<PostDto.PostDetailDto> beforeDeletePost = postService.getAllPostInfo();
+        int beforePostsNumber = member.getPosts().size();
+
+        postService.postDelete(post.getId());
+
+        List<PostDto.PostDetailDto> afterDeletePost = postService.getAllPostInfo();
+        int afterPostsNumber = member.getPosts().size();
+
+        assertEquals(1, beforeDeletePost.size() - afterDeletePost.size());
+        assertEquals(1, beforePostsNumber - afterPostsNumber);
+    }
 
     @Test
     @DisplayName("게시글 상세조회 테스트")
@@ -190,4 +182,3 @@ class PostServiceTest {
         assertEquals("게임기", dto.getHashtag());
     }
 }
->>>>>>> origin/master

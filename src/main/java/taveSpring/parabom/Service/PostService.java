@@ -5,18 +5,22 @@ import org.springframework.stereotype.Service;
 import taveSpring.parabom.Controller.Dto.PostDto;
 import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
+import taveSpring.parabom.Repository.MemberRepository;
 import taveSpring.parabom.Repository.PostRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+
+
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
+    private final MemberRepository memberRepository;
 
     /*게시물 상세조회*/
     public PostDto.PostDetailDto productDetail(Long id) {
@@ -43,16 +47,17 @@ public class PostService {
                 .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());
     }
 
-//    /*찜한 목록 조회*/
-//    public List<PostDto.PostDetailDto> getAllPostInfoLiked(Long memberId) {
-//        return postRepository.findAllListOfLiked(memberId).stream()
-//                .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());
-//    }
+    /*찜한 목록 조회*/
+    public List<PostDto.PostDetailDto> getAllPostInfoLiked(Long memberId) {
+        return postRepository.findAllListOfLiked(memberId).stream()
+                .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());
+    }
+
 
 
     /*구매 상태 변경*/
     @Transactional
-    public void modifyFinOrIng(Long id, ModifyFinOrIngRequest request) {
+    public void modifyFinOrIng(Long id, PostDto.ModifyFinOrIngRequest request) {
         // 상태변경 기능
         Post post = postRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("게시물 정보가 없습니다."));
@@ -64,12 +69,14 @@ public class PostService {
     public void postDelete(Long id) {
         Post post = postRepository.findById(id)
                         .orElseThrow(()-> new IllegalArgumentException("게시물 정보가 없습니다."));
+        Member member = post.getMember();
+        member.getPosts().remove(post);
         postRepository.delete(post);
     }
 
     /*게시물 수정*/
     @Transactional
-    public void postUpdate(Long id, ModifyRequest request) {
+    public void postUpdate(Long id, PostDto.ModifyRequest request) {
         Post post = postRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("게시물 정보가 없습니다."));
         post.update(request.getPrice(), request.getOpenOrNot(), request.getStatus(),
