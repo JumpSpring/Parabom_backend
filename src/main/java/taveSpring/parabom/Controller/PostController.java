@@ -1,5 +1,6 @@
 package taveSpring.parabom.Controller;
 
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -22,20 +23,22 @@ public class PostController {
     private final PostService postService;
     private final PostLikesService postLikesService;
 
+
+
     /* 게시물 상세조회*/
-    // TODO : Member 객체 넣기 완료
     @GetMapping(path = "/productDetail")
     public ResponseEntity<? extends BasicResponse> productDetail(@RequestParam(value="id") Long id) throws Exception {
         return ResponseEntity.ok(new CommonResponse<PostDto.PostDetailDto>(postService.productDetail(id)));
     }
 
     /*게시물 등록*/
-    // TODO : 로그인 정보 받아오기 - 게시물 내용과 이미지에 member_id 적용
+    // TODO : 로그인 정보 받아오기
     @PostMapping(path = "/create")
-    public ResponseEntity<? extends BasicResponse> create(@RequestPart("dto") PostDto.PostCreateDto dto,
-                                                          @RequestPart("image") List<MultipartFile> imageFileList,
+    public ResponseEntity<? extends BasicResponse> create(@RequestPart(value="dto") PostDto.PostCreateDto dto,
+                                                          @RequestPart(value="image") List<MultipartFile> imageFileList,
                                                           Model model) throws Exception {
-        try { // 상품 저장 로직 호출
+        // 상품 저장 로직 호출
+        try {
             postService.postCreate(dto, imageFileList);
         }
         catch (Exception e){
@@ -72,6 +75,12 @@ public class PostController {
     @GetMapping("/category")
     public ResponseEntity<? extends BasicResponse> findListByCategory(@RequestParam("categoryName") String categoryName) throws Exception {
         return ResponseEntity.ok().body(new CommonResponse<List>(postService.getAllPostInfoByCategory(categoryName)));
+    }
+
+    /*특정 회원의 게시물 리스트 조회*/
+    @GetMapping("/memberPostList")
+    public ResponseEntity<? extends BasicResponse> memberPostList(@RequestParam(value="id") Long memberId) {
+        return ResponseEntity.ok().body(new CommonResponse<List>(postService.getMemberPost(memberId)));
     }
 
 
