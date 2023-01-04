@@ -98,36 +98,55 @@ class PostServiceTest {
     void changeFinOrIng() {
         Post post = beforeEach();
         post.modifyFinOrIng(1);
-        assertEquals(post.getFinOrIng(), 1);
+        assertEquals(1, postService.productDetail(post.getId()).getFinOrIng());
     }
 
     @Test
     @DisplayName("게시물 수정 테스트")
-    void modifyPost() {
+    void modifyPost() throws Exception {
         Post post = beforeEach();
-        post.update(400000, 1, "Very Good", "direct", "기타", "게임기");
-        assertEquals(post.getPrice(), 400000);
-        assertEquals(post.getStatus(), "Very Good");
-        assertEquals(post.getCategory(), "기타");
+        Long postId = post.getId();
+
+        post.update(300000, 1, "Very Good", "delivery", "기타", "인형");
+
+        List<Image> imageList = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            Image image = new Image();
+            imageList.add(image);
+        }
+
+        post.updateImage(imageList);
+
+        PostDto.ModifyRequest modifyRequest = new PostDto.ModifyRequest(post);
+        postService.postUpdate(postId, modifyRequest);
+
+        //then
+        assertEquals(300000, postService.productDetail(postId).getPrice());
+        assertEquals(1, postService.productDetail(postId).getOpenOrNot());
+        assertEquals("인형", postService.productDetail(postId).getHashtag());
+        assertEquals(2, postService.productDetail(postId).getImages().size());
     }
+
 
     @Test
     @DisplayName("게시물 삭제 테스트")
     void deletePost() {
-
         Post post = beforeEach();
         Member member = post.getMember();
 
         List<PostDto.PostDetailDto> beforeDeletePost = postService.getAllPostInfo();
-        int beforePostsNumber = member.getPosts().size();
+        int beforePostsSize = member.getPosts().size();
 
-        postService.postDelete(post.getId());
+        Long postId = post.getId();
+        postService.postDelete(postId);
 
         List<PostDto.PostDetailDto> afterDeletePost = postService.getAllPostInfo();
-        int afterPostsNumber = member.getPosts().size();
+        int afterPostsSize = member.getPosts().size();
+
 
         assertEquals(1, beforeDeletePost.size() - afterDeletePost.size());
-        assertEquals(1, beforePostsNumber - afterPostsNumber);
+        assertEquals(1, beforePostsSize - afterPostsSize);
+        assertEquals(0, imageRepository.findByIdBy(postId).size());
     }
 
     @Test

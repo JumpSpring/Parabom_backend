@@ -2,6 +2,7 @@ package taveSpring.parabom.Domain;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import taveSpring.parabom.Controller.Dto.ImageDto;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -81,6 +82,12 @@ public class Post {
         this.category = category;
         this.hashtag = hashtag;
     }
+
+    // 이미지 수정 기능
+    public void updateImage(List<Image> images) {
+        this.images = images;
+    }
+
 
     // 게시물 거래 상태 수정 기능
     public void modifyFinOrIng(Integer finOrIng) {
