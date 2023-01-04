@@ -1,4 +1,5 @@
 package taveSpring.parabom.Domain;
+
 import lombok.*;
 import taveSpring.parabom.Controller.Dto.ImageDto;
 
@@ -38,4 +39,11 @@ public class Image {
         this.fileName = fileName;
         this.path = path;
     }
+
+    public static Image createImage(Post post, Member member, String fileName, String oriFileName, String path) {
+        return Image.builder().post(post).member(member)
+                .fileName(fileName).oriFileName(oriFileName).path(path).build();
+    }
+
+
 }
