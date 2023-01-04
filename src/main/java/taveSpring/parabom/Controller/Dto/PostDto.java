@@ -39,6 +39,8 @@ public class PostDto {
         private String content;
         private Timestamp date;
 
+        private List<Image> images;
+
         // 이미지 정보를 저장하는 리스트
         private List<ImageDto.ImageInfoDto> imageDtoList = new ArrayList<>();
 
@@ -62,6 +64,7 @@ public class PostDto {
             this.title = post.getTitle();
             this.content = post.getContent();
             this.date = post.getDate();
+            this.images = post.getImages();
 
             ImageDto.ImageInfoDto imageInfoDto = new ImageDto.ImageInfoDto();
             for(int i=0; i<imageDtoList.size(); i++) {
@@ -115,12 +118,23 @@ public class PostDto {
     @Getter @Setter
     @AllArgsConstructor
     public static class ModifyRequest{
+        private List<Image> images;
         private int price;
         private Integer openOrNot;
         private String status;
         private String directOrDel;
         private String category;
         private String hashtag;
+
+
+        public ModifyRequest(Post post) {
+            this.images = post.getImages();
+            this.price = post.getPrice();
+            this.openOrNot = post.getOpenOrNot();
+            this.status = post.getStatus();
+            this.directOrDel = post.getDirectOrDel();
+            this.hashtag = post.getHashtag();
+        }
     }
 
     /*게시물 거래 상태 수정*/

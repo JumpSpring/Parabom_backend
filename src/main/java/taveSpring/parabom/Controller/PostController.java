@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import taveSpring.parabom.Controller.Dto.ImageDto;
 import taveSpring.parabom.Controller.Dto.PostDto;
 import taveSpring.parabom.Controller.Response.BasicResponse;
 import taveSpring.parabom.Controller.Response.CommonResponse;
@@ -87,7 +88,7 @@ public class PostController {
 
 
     /*게시물 수정*/
-    @PatchMapping(path = "post/{post-id}")
+    @PatchMapping("/{post-id}")
     public ResponseEntity<? extends BasicResponse> modifyPost(@PathVariable("post-id") Long id,
                                                               PostDto.ModifyRequest request) {
         postService.postUpdate(id, request);
@@ -103,7 +104,7 @@ public class PostController {
     }
 
     /*상품 삭제*/
-    @DeleteMapping(path = "post/{post-id}")
+    @DeleteMapping(path = "/{post-id}")
     public ResponseEntity<? extends BasicResponse> deletePost(@PathVariable("post-id") Long id) {
         postService.postDelete(id);
         return ResponseEntity.ok().build();
