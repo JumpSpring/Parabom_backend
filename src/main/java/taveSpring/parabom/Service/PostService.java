@@ -119,6 +119,9 @@ public class PostService {
         Member member = post.getMember();
         member.getPosts().remove(post);
         postRepository.delete(post);
+        for (int i = 0; i < post.getImages().size();i++) {
+            imageRepository.delete(post.getImages().get(i));
+        }
     }
 
     /*게시물 수정*/
@@ -126,7 +129,18 @@ public class PostService {
     public void postUpdate(Long id, PostDto.ModifyRequest request) {
         Post post = postRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("게시물 정보가 없습니다."));
+        List<Image> images = imageRepository.findByIdBy(id);
+
+        // 글 수정
         post.update(request.getPrice(), request.getOpenOrNot(), request.getStatus(),
                 request.getDirectOrDel(), request.getCategory(), request.getHashtag());
+
+        // 이미지 수정
+        post.updateImage(request.getImages());
+
+        for(int i = 0; i < images.size(); i++) {
+            images.get(i).updateImage(request.getImages().get(i).getOriFileName(),
+                    request.getImages().get(i).getOriFileName(), request.getImages().get(i).getPath());
+        }
     }
 }

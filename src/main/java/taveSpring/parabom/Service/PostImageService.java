@@ -46,4 +46,5 @@ public class PostImageService {
         imageRepository.save(image);
 //        postRepository.save(image);
     }
+
 }
