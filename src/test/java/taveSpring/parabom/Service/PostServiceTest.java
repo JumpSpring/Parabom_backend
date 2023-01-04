@@ -93,7 +93,7 @@ class PostServiceTest {
         return multipartFileList;
     }
 
-    //@Test
+    @Test
     @DisplayName("게시글 상세조회 테스트")
     public void 게시글_상세조회() throws Exception {
         // given
@@ -111,7 +111,7 @@ class PostServiceTest {
         assertEquals(post.getImages().get(0).getId(), postDetailDto.getImageDtoList().get(0).toEntity().getId());
     }
 
-    //@Test
+    @Test
     @DisplayName("게시글 등록 테스트")
     public void 게시글_등록() throws Exception {
 
@@ -151,7 +151,7 @@ class PostServiceTest {
         assertEquals(multipartFileList.get(0).getOriginalFilename(), postDetailDto.getImageDtoList().get(0).toEntity().getOriFileName());
     }
 
-    //@Test
+    @Test
     @DisplayName("카테고리 조회 테스트")
     public void 카테고리_조회() throws Exception {
         Post post = beforeEach();
@@ -165,7 +165,7 @@ class PostServiceTest {
         assertEquals("게임기", postDetailDto.getHashtag());
     }
 
-    //@Test
+    @Test
     @DisplayName("좋아요 테스트")
     public void 좋아요() throws Exception {
         Post post = beforeEach();
@@ -180,7 +180,7 @@ class PostServiceTest {
         assertEquals(1, findPost.get().getLikes().size());
     }
 
-    //@Test
+    @Test
     @DisplayName("좋아요 취소 테스트")
     public void 좋아요_취소() throws Exception {
         Post post = beforeEach();
@@ -196,7 +196,7 @@ class PostServiceTest {
         assertEquals(0, findPost.get().getLikes().size());
     }
 
-    //@Test
+    @Test
     @DisplayName("내 찜 목록 조회 테스트")
     public void 찜한_목록_조회() throws Exception {
         Post post = beforeEach();
