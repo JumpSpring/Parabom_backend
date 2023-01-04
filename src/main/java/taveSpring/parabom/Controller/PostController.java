@@ -1,5 +1,6 @@
 package taveSpring.parabom.Controller;
 
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -11,6 +12,7 @@ import taveSpring.parabom.Controller.Response.CommonResponse;
 import taveSpring.parabom.Service.PostLikesService;
 import taveSpring.parabom.Service.PostService;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -21,28 +23,29 @@ public class PostController {
     private final PostService postService;
     private final PostLikesService postLikesService;
 
-    /*게시물 상세조회*/
-    // TODO : 멤버 닉네임 & 프사 받아오기
-    // 내 게시물 조회와 타인 게시물 조회 따로 구현?
+
+
+    /* 게시물 상세조회*/
     @GetMapping(path = "/productDetail")
     public ResponseEntity<? extends BasicResponse> productDetail(@RequestParam(value="id") Long id) throws Exception {
         return ResponseEntity.ok(new CommonResponse<PostDto.PostDetailDto>(postService.productDetail(id)));
     }
 
     /*게시물 등록*/
-    // TODO : 사진 등록(최대10개), 로그인 정보 받아오기
+    // TODO : 로그인 정보 받아오기
     @PostMapping(path = "/create")
-    public ResponseEntity<? extends BasicResponse> create(@RequestBody PostDto.PostCreateDto dto) throws Exception {
-        postService.postCreate(dto);
+    public ResponseEntity<? extends BasicResponse> create(@RequestPart(value="dto") PostDto.PostCreateDto dto,
+                                                          @RequestPart(value="image") List<MultipartFile> imageFileList,
+                                                          Model model) throws Exception {
+        // 상품 저장 로직 호출
+        try {
+            postService.postCreate(dto, imageFileList);
+        }
+        catch (Exception e){
+            model.addAttribute("errorMessage : ", "게시물 등록 중 에러 발생!");
+        }
         return ResponseEntity.ok().build();
     }
-
-    /*게시물 찜 목록에 추가
-    @PostMapping(path = "/addHeart")
-    public ResponseEntity<? extends BasicResponse> addHeart(@RequestParam(value="id") Long id) throws Exception {
-        postService.addHeart(id);
-        return
-    }*/
 
     /*게시글 찜하기 클릭*/
     // TODO : 로그인한 사용자 정보 불러오기
@@ -73,6 +76,14 @@ public class PostController {
     public ResponseEntity<? extends BasicResponse> findListByCategory(@RequestParam("categoryName") String categoryName) throws Exception {
         return ResponseEntity.ok().body(new CommonResponse<List>(postService.getAllPostInfoByCategory(categoryName)));
     }
+
+    /*특정 회원의 게시물 리스트 조회*/
+    @GetMapping("/memberPostList")
+    public ResponseEntity<? extends BasicResponse> memberPostList(@RequestParam(value="id") Long memberId) {
+        return ResponseEntity.ok().body(new CommonResponse<List>(postService.getMemberPost(memberId)));
+    }
+
+
 
 
     /*게시물 수정*/
