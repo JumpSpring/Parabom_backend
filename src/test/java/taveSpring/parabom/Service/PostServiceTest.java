@@ -98,6 +98,8 @@ class PostServiceTest {
     void changeFinOrIng() {
         Post post = beforeEach();
         post.modifyFinOrIng(1);
+        PostDto.ModifyFinOrIngRequest modifyFinOrIngRequest = new PostDto.ModifyFinOrIngRequest(post);
+        postService.modifyFinOrIng(post.getId(),modifyFinOrIngRequest);
         assertEquals(1, postService.productDetail(post.getId()).getFinOrIng());
     }
 
@@ -110,7 +112,7 @@ class PostServiceTest {
         post.update(300000, 1, "Very Good", "delivery", "기타", "인형");
 
         List<Image> imageList = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 3; i++) {
             Image image = new Image();
             imageList.add(image);
         }
@@ -124,7 +126,7 @@ class PostServiceTest {
         assertEquals(300000, postService.productDetail(postId).getPrice());
         assertEquals(1, postService.productDetail(postId).getOpenOrNot());
         assertEquals("인형", postService.productDetail(postId).getHashtag());
-        assertEquals(2, postService.productDetail(postId).getImages().size());
+        assertEquals(3, postService.productDetail(postId).getImages().size());
     }
 
 
