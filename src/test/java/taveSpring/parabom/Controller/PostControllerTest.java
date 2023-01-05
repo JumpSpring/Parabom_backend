@@ -205,5 +205,4 @@ public class PostControllerTest {
         verify(postService).postCreate(new PostDto.PostCreateDto(), multipartFileList);
 
     }
-
 }
