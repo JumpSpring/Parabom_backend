@@ -2,18 +2,19 @@ package taveSpring.parabom.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import taveSpring.parabom.Controller.Response.ExceptionController;
 import taveSpring.parabom.Service.ReviewService;
 
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.refEq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -24,15 +25,21 @@ import static taveSpring.parabom.Controller.Dto.ReviewDto.IdResponse;
 import static taveSpring.parabom.Controller.Dto.ReviewDto.ReviewCreateDto;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 public class ReviewControllerTest {
 
-    @Autowired
     private MockMvc mvc;
     @MockBean
     private ReviewService reviewService;
     @Autowired
     private ObjectMapper objectMapper;
+
+    @BeforeEach
+    void setUp(@Autowired ReviewController reviewController) {
+        //MockMvc
+        mvc = MockMvcBuilders.standaloneSetup(reviewController)
+                .setControllerAdvice(ExceptionController.class)
+                .build();
+    }
 
     public String toJsonString(ReviewCreateDto dto) throws JsonProcessingException {
         return objectMapper.writeValueAsString(dto);
@@ -43,7 +50,7 @@ public class ReviewControllerTest {
     void createReviewTest() throws Exception {
         ReviewCreateDto dto = createDto(2L, "판매자", "iphone13", "감사합니다!", 5);
 
-        given(reviewService.saveReview(dto, 1L))
+        given(reviewService.saveReview(any(), any()))
                 .willReturn(new IdResponse(1L));
 
         String content = toJsonString(dto);
@@ -53,10 +60,10 @@ public class ReviewControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                //.andExpect(jsonPath("$.data.id").exists())
+                .andExpect(jsonPath("$.data.id").exists())
                 .andExpect(jsonPath("$.count").exists());
 
-        verify(reviewService).saveReview(refEq(dto), eq(1L));
+        verify(reviewService).saveReview(any(ReviewCreateDto.class), anyLong());
     }
 
     public ReviewCreateDto createDto(Long senderId, String senderType, String itemName, String text, Integer starPoint) {
