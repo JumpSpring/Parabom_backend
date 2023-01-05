@@ -142,5 +142,9 @@ public class PostDto {
     @AllArgsConstructor
     public static class ModifyFinOrIngRequest {
         private Integer finOrIng;
+
+        public ModifyFinOrIngRequest(Post post) {
+            this.finOrIng = post.getFinOrIng();
+        }
     }
 }
