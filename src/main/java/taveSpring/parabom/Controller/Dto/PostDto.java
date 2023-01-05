@@ -3,7 +3,6 @@ package taveSpring.parabom.Controller.Dto;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.modelmapper.ModelMapper;
-import org.springframework.web.multipart.MultipartFile;
 import taveSpring.parabom.Domain.Image;
 import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
@@ -12,8 +11,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 public class PostDto {
@@ -81,7 +78,7 @@ public class PostDto {
     @NoArgsConstructor
     @Builder
     public static class PostCreateDto {
-        //private Member member;
+        private Member member;
 
         private Long id;
         private String name;
@@ -101,29 +98,15 @@ public class PostDto {
         private Image image;
         private List<Image> images = new ArrayList<>();
 
-        // 이미지 정보를 저장하는 리스트
-        private List<ImageDto.ImageInfoDto> imageDtoList = new ArrayList<>();
-
         public Post toEntity() {
             images.add(image);
-           return Post.builder().id(id).name(name).price(price).finOrIng(finOrIng)
-                   .datePurchased(datePurchased).openOrNot(openOrNot)
-                   .status(status).directOrDel(directOrDel).category(category).hashtag(hashtag)
-                   .title(title).content(content).date(date)
-                   .images(images)
-                   //.member(member)
-                   .build();
+            return Post.builder().id(id).name(name).price(price).finOrIng(finOrIng)
+                    .datePurchased(datePurchased).openOrNot(openOrNot)
+                    .status(status).directOrDel(directOrDel).category(category).hashtag(hashtag)
+                    .title(title).content(content).date(date)
+                    .images(images)
+                    .member(member)
+                    .build();
         }
-
     }
-
-    /* 찜한 목록에 추가 */
-    @Getter @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class AddHeartDto {
-        private Long id;
-        private Member member;
-    }
-
 }

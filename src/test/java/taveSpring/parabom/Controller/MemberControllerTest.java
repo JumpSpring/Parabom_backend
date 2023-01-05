@@ -36,6 +36,7 @@ public class MemberControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+
     List<MemberInfoResponse> members = new ArrayList<>();
     Member member1 = getMember("email1@gmail.com","password","nickname1","profile","address");
     Member member2 = getMember("email2@gmail.com","password","nickname2","profile","address");
