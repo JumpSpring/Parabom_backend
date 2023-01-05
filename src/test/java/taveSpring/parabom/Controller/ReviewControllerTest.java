@@ -50,7 +50,7 @@ public class ReviewControllerTest {
     void createReviewTest() throws Exception {
         ReviewCreateDto dto = createDto(2L, "판매자", "iphone13", "감사합니다!", 5);
 
-        given(reviewService.saveReview(any(), any()))
+        given(reviewService.saveReview(any(ReviewCreateDto.class), anyLong()))
                 .willReturn(new IdResponse(1L));
 
         String content = toJsonString(dto);
