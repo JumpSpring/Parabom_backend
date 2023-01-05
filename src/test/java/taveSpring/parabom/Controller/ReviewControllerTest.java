@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import taveSpring.parabom.Domain.Review;
 import taveSpring.parabom.Service.ReviewService;
 
 import static org.mockito.ArgumentMatchers.eq;
@@ -43,7 +42,6 @@ public class ReviewControllerTest {
     @DisplayName("후기 등록 컨트롤러 테스트")
     void createReviewTest() throws Exception {
         ReviewCreateDto dto = createDto(2L, "판매자", "iphone13", "감사합니다!", 5);
-        Review review = dto.toEntity();
 
         given(reviewService.saveReview(dto, 1L))
                 .willReturn(new IdResponse(1L));
