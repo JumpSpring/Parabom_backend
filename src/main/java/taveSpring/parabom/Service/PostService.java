@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import taveSpring.parabom.Controller.Dto.ImageDto;
+import taveSpring.parabom.Controller.Dto.MemberDto;
 import taveSpring.parabom.Controller.Dto.PostDto;
 import taveSpring.parabom.Domain.Image;
 import taveSpring.parabom.Domain.Member;
@@ -46,7 +47,7 @@ public class PostService {
         PostDto.PostDetailDto detailDto = new PostDto.PostDetailDto(entity);
         detailDto.setImageDtoList(imageDtoList);
         Optional<Member> member = memberRepository.findByEmail(entity.getMember().getEmail());
-        detailDto.setMember(member.get());
+        detailDto.setMemberInfoResponse(MemberDto.MemberInfoResponse.of(member.get()));
         //System.out.print("[Info][productDetail SERVICE] detailDto.getImageInfoDtos() : " + detailDto.getImageDtoList());
         //System.out.print("[Info][productDetail SERVICE] imageDtoList.get(0) : " + imageDtoList.get(0));
         return detailDto;
@@ -64,8 +65,8 @@ public class PostService {
         for(int i=0 ; i<imageList.size(); i++){
             Image image = new Image();
             System.out.println("[Info][productCreate SERVICE] imageList.get(0).getName() : " + imageList.get(0).getName());
-            postDto.setImage(image);
-            image.setPost(post);
+            //postDto.setImage(image);
+            image.setPost(post); // 연관관계 메서드 추가
             postImageService.saveImage(image, imageList.get(i));
             System.out.println("[Info][productCreate SERVICE] image.getPath() : " + image.getPath());
         }

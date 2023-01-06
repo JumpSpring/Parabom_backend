@@ -21,6 +21,13 @@ public class ImageDto {
         private String fileName;
         private String oriFileName;
 
+        public ImageInfoDto(Image image) {
+            this.id = image.getId();
+            this.path = image.getPath();
+            this.fileName = image.getFileName();
+            this.oriFileName = image.getOriFileName();
+        }
+
         public static ImageDto.ImageInfoDto of(Image image) {
             return modelMapper.map(image, ImageDto.ImageInfoDto.class);
             // entity -> dto

@@ -107,7 +107,7 @@ class PostServiceTest {
         assertEquals(post.getPrice(), postDetailDto.getPrice());
         assertEquals(post.getTitle(), postDetailDto.getTitle());
         assertEquals(post.getContent(), postDetailDto.getContent());
-        assertEquals(post.getMember().getId(), postDetailDto.getMember().getId());
+        assertEquals(post.getMember().getId(), postDetailDto.getMemberInfoResponse().getId());
         assertEquals(post.getImages().get(0).getId(), postDetailDto.getImageDtoList().get(0).toEntity().getId());
     }
 
@@ -145,7 +145,7 @@ class PostServiceTest {
         assertEquals("ps4", postDetailDto.getName());
         assertEquals(300000, postDetailDto.getPrice());
         assertEquals("게임기", postDetailDto.getHashtag());
-        assertEquals("nickname1", postDetailDto.getMember().getNickname());
+        assertEquals("nickname1", postDetailDto.getMemberInfoResponse().getNickname());
         assertEquals(postDetailDto.getId(), imageList1.get(0).getPost().getId());
         assertEquals(multipartFileList.get(0).getOriginalFilename(), imageList1.get(0).getOriFileName());
         assertEquals(multipartFileList.get(0).getOriginalFilename(), postDetailDto.getImageDtoList().get(0).toEntity().getOriFileName());

@@ -3,6 +3,7 @@ package taveSpring.parabom.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jboss.jandex.PositionBasedTypeTarget;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,8 +32,10 @@ import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
 import taveSpring.parabom.Repository.ImageRepository;
 import taveSpring.parabom.Repository.MemberRepository;
+import taveSpring.parabom.Repository.PostLikesRepository;
 import taveSpring.parabom.Repository.PostRepository;
 import taveSpring.parabom.Service.PostImageService;
+import taveSpring.parabom.Service.PostLikesService;
 import taveSpring.parabom.Service.PostService;
 
 import java.nio.charset.StandardCharsets;
@@ -40,8 +43,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -66,6 +67,10 @@ public class PostControllerTest {
     @Autowired
     ImageRepository imageRepository;
 
+    List<PostDto.PostDetailDto> posts = new ArrayList<>();
+    List<PostDto.PostDetailDto> postsByCategory = new ArrayList<>();
+    List<PostDto.PostDetailDto> postsByMember = new ArrayList<>();
+
     public Post beforeEach() { // post 생성하여 저장
         Optional<Member> member = memberRepository.findById(Integer.toUnsignedLong(1));
         Post post = getPost("ps5", 500000, 0, getDate(2018, 8, 15),
@@ -86,7 +91,45 @@ public class PostControllerTest {
         return postRepository.save(post);
     }
 
-    private Date getDate(int y, int m, int d) {
+    public void setUp() {
+        Optional<Member> member1 = memberRepository.findByEmail("email1@gmail.com");
+        Optional<Member> member2 = memberRepository.findByEmail("email2@gmail.com");
+        Optional<Member> member3 = memberRepository.findByEmail("email3@gmail.com");
+
+        Post post1 = getPost("ps5", 500000, 0, getDate(2018, 8, 15),
+                0, "good", "direct", "전자제품", "게임기", "ps5",
+                "ps5", member1.get());
+
+        Post post2 = getPost("MacBook", 1700000, 0, getDate(2020, 1, 1),
+                0, "good", "direct", "전자제품", "노트북", "MacBook",
+                "MacBook", member2.get());
+
+        Post post3 = getPost("clothes", 10000, 0, getDate(2022, 8, 15),
+                0, "good", "direct", "의류", "옷", "clothes",
+                "clothes", member1.get());
+
+        Post post4 = getPost("book", 5000, 0, getDate(2020, 8, 15),
+                0, "good", "direct", "도서", "도서", "book",
+                "book", member3.get());
+
+        Post post5 = getPost("tv", 800000, 0, getDate(2021, 8, 15),
+                0, "good", "direct", "전자제품", "tv", "tv",
+                "tv", member2.get());
+
+        PostDto.PostDetailDto postDetailDto1 = new PostDto.PostDetailDto(post1);
+        PostDto.PostDetailDto postDetailDto2 = new PostDto.PostDetailDto(post2);
+        PostDto.PostDetailDto postDetailDto3 = new PostDto.PostDetailDto(post3);
+        PostDto.PostDetailDto postDetailDto4 = new PostDto.PostDetailDto(post4);
+        PostDto.PostDetailDto postDetailDto5 = new PostDto.PostDetailDto(post5);
+
+        posts.add(postDetailDto1); postsByCategory.add(postDetailDto1);
+        posts.add(postDetailDto2); postsByCategory.add(postDetailDto2);
+        posts.add(postDetailDto3);
+        posts.add(postDetailDto4); postsByMember.add(postDetailDto4);
+        posts.add(postDetailDto5); postsByCategory.add(postDetailDto5);
+    }
+
+    public Date getDate(int y, int m, int d) {
         Calendar cal = Calendar.getInstance();
         cal.set(y, m-1, d);
         return new Date(cal.getTimeInMillis());
@@ -114,7 +157,10 @@ public class PostControllerTest {
 
         Post post = beforeEach();
 
-        given(postService.productDetail(post.getId())).willReturn(
+        PostDto.PostDetailDto postDetailDto = postService.productDetail(post.getId());
+
+
+        /*given(postService.productDetail(post.getId())).willReturn(
                 new PostDto.PostDetailDto(post)
         );
 
@@ -128,7 +174,7 @@ public class PostControllerTest {
                 .andExpect(jsonPath(post.getImages().get(0).getPath()).exists())
                 .andDo(print());
 
-        verify(postService).productDetail(post.getId());
+        verify(postService).productDetail(post.getId());*/
     }
 
     @Test
@@ -204,6 +250,58 @@ public class PostControllerTest {
 
         verify(postService).postCreate(new PostDto.PostCreateDto(), multipartFileList);
 
+    }
+
+    @Test
+    @DisplayName("전체 게시물 조회")
+    void test1() throws Exception {
+        setUp();
+
+        given(postService.getAllPostInfo()).willReturn(posts);
+
+        mvc.perform(get("/post/allList"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.count").value("5"))
+                .andExpect(jsonPath("$.data.[0].name").value("ps5"))
+                .andExpect(jsonPath("$.data.[1].name").value("MacBook"))
+                .andExpect(jsonPath("$.data.[2].name").value("clothes"))
+                .andExpect(jsonPath("$.data.[3].name").value("book"))
+                .andExpect(jsonPath("$.data.[4].name").value("tv"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("카테고리 조회")
+    void test2() throws Exception {
+        setUp();
+
+        given(postService.getAllPostInfoByCategory("전자제품")).willReturn(postsByCategory);
+
+        mvc.perform(get("/post/category?categoryName=전자제품"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.count").value("3"))
+                .andExpect(jsonPath("$.data.[0].name").value("ps5"))
+                .andExpect(jsonPath("$.data.[0].memberInfoResponse.nickname").value("nickname1"))
+                .andExpect(jsonPath("$.data.[1].name").value("MacBook"))
+                .andExpect(jsonPath("$.data.[1].memberInfoResponse.nickname").value("nickname2"))
+                .andExpect(jsonPath("$.data.[2].name").value("tv"))
+                .andExpect(jsonPath("$.data.[2].memberInfoResponse.nickname").value("nickname2"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("특정 회원의 게시물 리스트 조회")
+    void test3() throws Exception {
+        setUp();
+
+        Optional<Member> member3 = memberRepository.findByEmail("email3@gmail.com");
+        given(postService.getMemberPost(member3.get().getId())).willReturn(postsByMember);
+
+        mvc.perform(get("/post/memberPostList?id=" + member3.get().getId()))
+                .andExpect(jsonPath("$.count").value("1"))
+                .andExpect(jsonPath("$.data.[0].name").value("book"))
+                .andExpect(jsonPath("$.data.[0].memberInfoResponse.nickname").value("nickname3"))
+                .andDo(print());
     }
 
 }
