@@ -1,7 +1,6 @@
 package taveSpring.parabom.Controller.Dto;
 
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 import org.modelmapper.ModelMapper;
 import taveSpring.parabom.Domain.Image;
 import taveSpring.parabom.Domain.Member;
@@ -23,7 +22,7 @@ public class PostDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class PostDetailDto {
-        private Member member;
+        private MemberDto.MemberInfoResponse memberInfoResponse;
 
         private Long id;
         private String name;
@@ -38,6 +37,7 @@ public class PostDto {
         private String title;
         private String content;
         private Timestamp date;
+        private int likes;
 
         // 이미지 정보를 저장하는 리스트
         private List<ImageDto.ImageInfoDto> imageDtoList = new ArrayList<>();
@@ -48,13 +48,11 @@ public class PostDto {
         }
 
         public PostDetailDto(Post post) {
-            this.member = post.getMember();
             this.id = post.getId();
             this.name = post.getName();
             this.price = post.getPrice();
             this.finOrIng = post.getFinOrIng();
             this.datePurchased = post.getDatePurchased();
-            this.openOrNot = post.getOpenOrNot();
             this.status = post.getStatus();
             this.openOrNot = post.getOpenOrNot();
             this.directOrDel = post.getDirectOrDel();
@@ -62,6 +60,11 @@ public class PostDto {
             this.title = post.getTitle();
             this.content = post.getContent();
             this.date = post.getDate();
+            this.likes = post.getLikes().size();
+
+            this.memberInfoResponse = MemberDto.MemberInfoResponse.of(post.getMember());
+            /*this.imageDtoList = post.getImages().stream()
+                    .map(image -> new ImageDto.ImageInfoDto(image)).collect(Collectors.toList());*/
 
             ImageDto.ImageInfoDto imageInfoDto = new ImageDto.ImageInfoDto();
             for(int i=0; i<imageDtoList.size(); i++) {

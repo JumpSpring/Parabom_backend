@@ -33,6 +33,12 @@ public class Image {
     private String oriFileName; // 업로드된 이미지 파일의 초기 이름
     private String path;        // 로컬에 저장된 이미지 파일을 불러올 경로
 
+    // 연관관계 메서드
+    public void setPost(Post post) {
+        this.post = post;
+        post.getImages().add(this);
+    }
+
     // 이미지 정보 저장
     public void updateImage(String oriFileName, String fileName, String path) {
         this.oriFileName = oriFileName;
