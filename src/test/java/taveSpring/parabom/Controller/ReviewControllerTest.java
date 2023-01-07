@@ -11,16 +11,19 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import taveSpring.parabom.Controller.Dto.ReviewDto;
 import taveSpring.parabom.Controller.Response.ExceptionController;
 import taveSpring.parabom.Service.ReviewService;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static taveSpring.parabom.Controller.Dto.ReviewDto.*;
 import static taveSpring.parabom.Controller.Dto.ReviewDto.IdResponse;
 import static taveSpring.parabom.Controller.Dto.ReviewDto.ReviewCreateDto;
 
@@ -45,6 +48,10 @@ public class ReviewControllerTest {
         return objectMapper.writeValueAsString(dto);
     }
 
+    public String toJsonStringModifyDto(ReviewModifyDto dto) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(dto);
+    }
+
     @Test
     @DisplayName("후기 등록 컨트롤러 테스트")
     void createReviewTest() throws Exception {
@@ -64,6 +71,20 @@ public class ReviewControllerTest {
                 .andExpect(jsonPath("$.count").exists());
 
         verify(reviewService).saveReview(any(ReviewCreateDto.class), anyLong());
+    }
+
+    @Test
+    @DisplayName("후기 수정 컨트롤러 테스트")
+    void modifyReviewTest() throws Exception {
+        ReviewModifyDto modifyDto = new ReviewModifyDto("iphone13 mini", "감사합니다!!!", 4);
+
+        String content = toJsonStringModifyDto(modifyDto);
+
+        mvc.perform(patch("/member/1/review/1")
+                        .content(content)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     public ReviewCreateDto createDto(Long senderId, String senderType, String itemName, String text, Integer starPoint) {
