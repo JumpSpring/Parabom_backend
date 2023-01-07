@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import taveSpring.parabom.Controller.Dto.ImageDto;
 import taveSpring.parabom.Controller.Dto.MemberDto;
 import taveSpring.parabom.Controller.Dto.PostDto;
+import taveSpring.parabom.Controller.Dto.PostSearch;
 import taveSpring.parabom.Domain.Image;
 import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
@@ -98,6 +99,11 @@ public class PostService {
     /*특정 회원의 게시물 리스트 조회*/
     public List<PostDto.PostDetailDto> getMemberPost(Long memberId) {
         return postRepository.findAllByMemberId(memberId).stream()
+                .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());
+    }
+
+    public List<PostDto.PostDetailDto> getPostBySearch(PostSearch postSearch) {
+        return postRepository.searchPosts(postSearch).stream()
                 .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());
     }
 

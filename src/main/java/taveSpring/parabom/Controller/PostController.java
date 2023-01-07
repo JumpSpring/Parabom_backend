@@ -7,8 +7,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import taveSpring.parabom.Controller.Dto.PostDto;
+import taveSpring.parabom.Controller.Dto.PostSearch;
 import taveSpring.parabom.Controller.Response.BasicResponse;
 import taveSpring.parabom.Controller.Response.CommonResponse;
+import taveSpring.parabom.Repository.PostLikesRepository;
 import taveSpring.parabom.Service.PostLikesService;
 import taveSpring.parabom.Service.PostService;
 
@@ -22,7 +24,7 @@ public class PostController {
 
     private final PostService postService;
     private final PostLikesService postLikesService;
-
+    private final PostLikesRepository postLikesRepository;
 
 
     /* 게시물 상세조회*/
@@ -81,6 +83,12 @@ public class PostController {
     @GetMapping("/memberPostList")
     public ResponseEntity<? extends BasicResponse> memberPostList(@RequestParam(value="id") Long memberId) {
         return ResponseEntity.ok().body(new CommonResponse<List>(postService.getMemberPost(memberId)));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<? extends BasicResponse> postSearch(
+            @ModelAttribute("postSearch") PostSearch postSearch) {
+        return ResponseEntity.ok().body(new CommonResponse<List>(postService.getPostBySearch(postSearch)));
     }
 
 
