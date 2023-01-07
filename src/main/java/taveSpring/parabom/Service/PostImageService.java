@@ -44,6 +44,6 @@ public class PostImageService {
         // 이미지 정보 저장
         image.updateImage(oriFileName, filename, path);
         imageRepository.save(image);
-        postRepository.save(image);
+        //postRepository.save(image);
     }
 }

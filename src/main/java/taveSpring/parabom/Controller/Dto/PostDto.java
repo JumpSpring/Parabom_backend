@@ -33,7 +33,7 @@ public class PostDto {
         private String status;
         private String directOrDel;
         private String hashtag;
-
+        private String category;
         private String title;
         private String content;
         private Timestamp date;
@@ -61,6 +61,7 @@ public class PostDto {
             this.content = post.getContent();
             this.date = post.getDate();
             this.likes = post.getLikes().size();
+            this.category = post.getCategory();
 
             this.memberInfoResponse = MemberDto.MemberInfoResponse.of(post.getMember());
             /*this.imageDtoList = post.getImages().stream()

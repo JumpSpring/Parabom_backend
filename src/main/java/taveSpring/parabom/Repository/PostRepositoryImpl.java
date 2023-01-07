@@ -46,11 +46,11 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                 .fetch();
     }
 
-    private BooleanExpression getNameContains(String name) { // name이 존재하는지 확인
+    private BooleanExpression getNameContains(String name) { // name이 존재하면 검색
         return StringUtils.hasText(name) ? post.name.contains(name) : null;
     }
 
-    private BooleanExpression getPriceContains(Integer price) {
+    private BooleanExpression getPriceContains(Integer price) { // price이상의 금액으로 post 조회
         return price != null ? post.price.goe(price) : null;
     }
 }
