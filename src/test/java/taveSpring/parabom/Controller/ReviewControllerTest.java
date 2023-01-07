@@ -18,8 +18,7 @@ import taveSpring.parabom.Service.ReviewService;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -83,6 +82,14 @@ public class ReviewControllerTest {
         mvc.perform(patch("/member/1/review/1")
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("후기 삭제 컨트롤러 테스트")
+    void deleteReviewTest() throws Exception {
+        mvc.perform(delete("/member/1/review/1"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
