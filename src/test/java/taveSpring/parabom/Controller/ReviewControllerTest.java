@@ -11,11 +11,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import taveSpring.parabom.Controller.Dto.ReviewDto;
 import taveSpring.parabom.Controller.Response.ExceptionController;
 import taveSpring.parabom.Service.ReviewService;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -23,8 +23,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static taveSpring.parabom.Controller.Dto.ReviewDto.*;
-import static taveSpring.parabom.Controller.Dto.ReviewDto.IdResponse;
-import static taveSpring.parabom.Controller.Dto.ReviewDto.ReviewCreateDto;
 
 @SpringBootTest
 public class ReviewControllerTest {
