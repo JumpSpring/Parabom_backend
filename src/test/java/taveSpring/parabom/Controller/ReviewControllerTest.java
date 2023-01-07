@@ -43,11 +43,11 @@ public class ReviewControllerTest {
                 .build();
     }
 
-    public String toJsonString(ReviewCreateDto dto) throws JsonProcessingException {
+    public String createDtoToJsonString(ReviewCreateDto dto) throws JsonProcessingException {
         return objectMapper.writeValueAsString(dto);
     }
 
-    public String toJsonStringModifyDto(ReviewModifyDto dto) throws JsonProcessingException {
+    public String modifyDtoToJsonString(ReviewModifyDto dto) throws JsonProcessingException {
         return objectMapper.writeValueAsString(dto);
     }
 
@@ -59,7 +59,7 @@ public class ReviewControllerTest {
         given(reviewService.saveReview(any(ReviewCreateDto.class), anyLong()))
                 .willReturn(new IdResponse(1L));
 
-        String content = toJsonString(dto);
+        String content = createDtoToJsonString(dto);
 
         mvc.perform(post("/member/1/review")
                         .content(content)
@@ -77,7 +77,7 @@ public class ReviewControllerTest {
     void modifyReviewTest() throws Exception {
         ReviewModifyDto modifyDto = new ReviewModifyDto("iphone13 mini", "감사합니다!!!", 4);
 
-        String content = toJsonStringModifyDto(modifyDto);
+        String content = modifyDtoToJsonString(modifyDto);
 
         mvc.perform(patch("/member/1/review/1")
                         .content(content)
