@@ -1,9 +1,9 @@
 package taveSpring.parabom.Controller.Dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
-@Getter @Setter
+@Data
 public class PostSearch {
 
     private String name;

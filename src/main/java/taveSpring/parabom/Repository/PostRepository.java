@@ -5,7 +5,6 @@ import taveSpring.parabom.Domain.Image;
 import taveSpring.parabom.Domain.Post;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface PostRepository  extends JpaRepository<Post,Long>, PostRepositoryCustom {
 
@@ -16,7 +15,7 @@ public interface PostRepository  extends JpaRepository<Post,Long>, PostRepositor
     //List<Post> findAllListOfLiked(Long memberId); // member fetch join
 
     /* Post 엔티티에 Image 저장*/
-    List<Image> save(Image image);
+    //List<Image> save(Image image);
 
     List<Post> findAllByMemberId(Long memberId);
 }
