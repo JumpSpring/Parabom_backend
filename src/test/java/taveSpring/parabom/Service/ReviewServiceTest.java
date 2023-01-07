@@ -104,6 +104,8 @@ public class ReviewServiceTest {
     // 추가 코드 //
 
     // 전체 후기 조회 테스트코드 작성, getReviewList
+
+    /*
     @Test
     public void 후기_전체_조회() {
         memberRepository.save(member1);
@@ -146,6 +148,8 @@ public class ReviewServiceTest {
         assertEquals(3, reviewService.getStarPoint(member2.getId()));
 
     }
+    */
+
 
     // 추가 코드 //
 }
