@@ -10,8 +10,10 @@ import taveSpring.parabom.Domain.QMember;
 import taveSpring.parabom.Domain.QPost;
 
 import javax.persistence.EntityManager;
+import java.util.Date;
 import java.util.List;
 
+import static org.springframework.util.StringUtils.*;
 import static taveSpring.parabom.Domain.QMember.*;
 import static taveSpring.parabom.Domain.QPost.*;
 
@@ -42,15 +44,64 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                 .selectFrom(post)
                 .join(post.member, member)
                 .where(getNameContains(postSearch.getName()),
-                        getPriceContains(postSearch.getPrice()))
+                        getPriceContains(postSearch.getPrice()),
+                        getFinOrIng(postSearch.getFinOrIng()),
+                        getDatePurchased(postSearch.getDatePurchased()),
+                        getOpenOrNot(postSearch.getOpenOrNot()),
+                        getStatus(postSearch.getStatus()),
+                        getDirectOrDel(postSearch.getDirectOrDel()),
+                        getCategory(postSearch.getCategory()),
+                        getHashtag(postSearch.getHashtag()),
+                        getTitle(postSearch.getTitle()),
+                        getContent(postSearch.getContent()))
                 .fetch();
     }
 
-    private BooleanExpression getNameContains(String name) { // name이 존재하면 검색
-        return StringUtils.hasText(name) ? post.name.contains(name) : null;
+    // name이 존재하면 검색
+    private BooleanExpression getNameContains(String name) {
+        return hasText(name) ? post.name.contains(name) : null;
     }
 
-    private BooleanExpression getPriceContains(Integer price) { // price이상의 금액으로 post 조회
+    // price이상의 금액으로 post 조회
+    private BooleanExpression getPriceContains(Integer price) {
         return price != null ? post.price.goe(price) : null;
+    }
+
+    // 거래중 or 거래완료 검색
+    private BooleanExpression getFinOrIng(Integer finOrIng) {
+        return finOrIng != null ? post.finOrIng.eq(finOrIng) : null;
+    }
+
+    // 입력된 구매날짜 기준으로 현재까지의 구매날짜를 가진 post 검색
+    private BooleanExpression getDatePurchased(Date startDate) {
+        return startDate != null ? post.datePurchased.goe(startDate) : null;
+    }
+
+    private BooleanExpression getOpenOrNot(Integer openOrNot) {
+        return openOrNot != null ? post.openOrNot.eq(openOrNot) : null;
+    }
+
+    private BooleanExpression getStatus(String status) {
+        return hasText(status) ? post.status.contains(status) : null;
+    }
+
+    private BooleanExpression getDirectOrDel(String directOrDel) {
+        return hasText(directOrDel) ? post.directOrDel.eq(directOrDel) : null;
+    }
+
+    private BooleanExpression getCategory(String category) {
+        return hasText(category) ? post.category.eq(category) : null;
+    }
+
+    private BooleanExpression getHashtag(String hashtag) {
+        return hasText(hashtag) ? post.hashtag.contains(hashtag) : null;
+    }
+
+    private BooleanExpression getTitle(String title) {
+        return hasText(title) ? post.title.contains(title) : null;
+    }
+
+    private BooleanExpression getContent(String content) {
+        return hasText(content) ? post.content.contains(content) : null;
     }
 }
