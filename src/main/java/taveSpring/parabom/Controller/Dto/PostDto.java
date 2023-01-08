@@ -34,6 +34,7 @@ public class PostDto {
         private String status;
         private String directOrDel;
         private String hashtag;
+        private String category;
 
         private String title;
         private String content;
@@ -62,6 +63,7 @@ public class PostDto {
             this.title = post.getTitle();
             this.content = post.getContent();
             this.date = post.getDate();
+            this.category = post.getCategory();
 
             ImageDto.ImageInfoDto imageInfoDto = new ImageDto.ImageInfoDto();
             for(int i=0; i<imageDtoList.size(); i++) {
