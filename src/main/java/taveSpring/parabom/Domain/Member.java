@@ -23,6 +23,15 @@ public class Member {
     private String profile;
     private String address;
 
+    //게시물 리스트
+    @OneToMany(mappedBy="member")
+    private List<Post> posts = new ArrayList<>();
+
+    //구매 내역 리스트
+    @OneToMany(mappedBy = "buyer")
+    private List<Post> buyList = new ArrayList<Post>();
+
+
     //받은 리뷰 리스트
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)
     private final List<Review> myReviews = new ArrayList<>();
@@ -66,6 +75,8 @@ public class Member {
         sendReviews.add(review);
     }
 
+
+
     public void updateStarPoint(Integer oldStarPoint, Integer newStarPoint) {
         double totalStarPoint = avgStarPoint * myReviews.size();
         totalStarPoint += (newStarPoint - oldStarPoint);
@@ -87,5 +98,9 @@ public class Member {
 
     public void deleteSendReview(Review review) {
         sendReviews.remove(review);
+    }
+
+    public void addBuyList(Post post) {
+        buyList.add(post);
     }
 }

@@ -2,6 +2,7 @@ package taveSpring.parabom.Domain;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import taveSpring.parabom.Controller.Dto.ImageDto;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -14,7 +15,6 @@ import java.util.*;
 @NoArgsConstructor
 @Builder
 public class Post {
-
     @Id
     @Column(name = "post_id")
     @GeneratedValue
@@ -38,11 +38,16 @@ public class Post {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @ManyToOne
+    @JoinColumn(name = "buyer_id")
+    private Member buyer;
+
     @OneToMany(mappedBy = "post")
     private List<Image> images = new ArrayList<Image>();
 
     @OneToMany(mappedBy = "post")
     private Set<PostLikes> likes = new HashSet<PostLikes>();
+
 
     // 연관관계 메서드
     public void addImages(Image image) {
@@ -70,5 +75,32 @@ public class Post {
                 .date(Timestamp.valueOf(LocalDateTime.now()))
                 .likes(new HashSet<>())
                 .build();
+    }
+
+    // 게시물 수정 기능
+    public void update(int price, Integer openOrNot, String status, String directOrDel, String category, String hashtag) {
+        this.price = price;
+        this.openOrNot = openOrNot;
+        this.status = status;
+        this.directOrDel = directOrDel;
+        this.category = category;
+        this.hashtag = hashtag;
+    }
+
+    // 이미지 수정 기능
+    public void updateImage(List<Image> images) {
+        this.images = images;
+    }
+
+
+    // 게시물 거래 상태 수정 기능
+    public void modifyFinOrIng(Integer finOrIng) {
+        this.finOrIng = finOrIng;
+    }
+
+    //거래완료
+    public void dealComplete(Member buyer) {
+        this.finOrIng = 1;
+        this.buyer = buyer;
     }
 }
