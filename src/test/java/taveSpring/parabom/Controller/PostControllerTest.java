@@ -2,37 +2,23 @@ package taveSpring.parabom.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.jboss.jandex.PositionBasedTypeTarget;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import taveSpring.parabom.Controller.Dto.ImageDto;
 import taveSpring.parabom.Controller.Dto.PostDto;
-import taveSpring.parabom.Controller.Response.ExceptionController;
 import taveSpring.parabom.Domain.Image;
 import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
-import taveSpring.parabom.Repository.ImageRepository;
 import taveSpring.parabom.Repository.MemberRepository;
-import taveSpring.parabom.Repository.PostRepository;
-import taveSpring.parabom.Service.PostImageService;
 import taveSpring.parabom.Service.PostService;
 
 import java.nio.charset.StandardCharsets;
@@ -42,12 +28,12 @@ import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -60,30 +46,60 @@ public class PostControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
-    PostRepository postRepository;
-    @Autowired
     MemberRepository memberRepository;
-    @Autowired
-    ImageRepository imageRepository;
 
-    public Post beforeEach() { // post 생성하여 저장
-        Optional<Member> member = memberRepository.findById(Integer.toUnsignedLong(1));
-        Post post = getPost("ps5", 500000, 0, getDate(2018, 8, 15),
+    Post post = new Post();
+    List<ImageDto.ImageInfoDto> imageInfoDtoList = new ArrayList<>();
+    List<PostDto.PostDetailDto> posts = new ArrayList<>();
+    List<PostDto.PostDetailDto> postsByCategory = new ArrayList<>();
+    List<PostDto.PostDetailDto> postsByMember = new ArrayList<>();
+
+    public void setUp() throws Exception {
+        Optional<Member> member1 = memberRepository.findByEmail("email1@gmail.com");
+        Optional<Member> member2 = memberRepository.findByEmail("email2@gmail.com");
+        Optional<Member> member3 = memberRepository.findByEmail("email3@gmail.com");
+
+        Post post1 = getPost("ps5", 500000, 0, getDate(2018, 8, 15),
                 0, "good", "direct", "전자제품", "게임기", "ps5",
-                "ps5", member.get());
+                "ps5", member1.get());
+        post1.setId(1L);
 
-        // 이미지 추가
-        Image image = getImage(post, member.get(), "fileName.jpg", "oriFileName.jpg" ,
-                "D:\\22-12-Parabom-Project-new");
-        List<Image> imageList = new ArrayList<>();
-        imageList.add(image);
-        post.setImages(imageList);
-        List<ImageDto.ImageInfoDto> imageDtoList = new ArrayList<>();
-        ImageDto.ImageInfoDto dto = ImageDto.ImageInfoDto.of(image);
-        imageDtoList.add(dto);
-        imageRepository.save(image);
+        Post post2 = getPost("MacBook", 1700000, 0, getDate(2020, 1, 1),
+                0, "good", "direct", "전자제품", "노트북", "MacBook",
+                "MacBook", member2.get());
 
-        return postRepository.save(post);
+        Post post3 = getPost("clothes", 10000, 0, getDate(2022, 8, 15),
+                0, "good", "direct", "의류", "옷", "clothes",
+                "clothes", member1.get());
+
+        Post post4 = getPost("book", 5000, 0, getDate(2020, 8, 15),
+                0, "good", "direct", "도서", "도서", "book",
+                "book", member3.get());
+
+        Post post5 = getPost("tv", 800000, 0, getDate(2021, 8, 15),
+                0, "good", "direct", "전자제품", "tv", "tv",
+                "tv", member2.get());
+
+        // 이미지
+        ImageDto.ImageInfoDto imageInfoDto = new ImageDto.ImageInfoDto(1L, "D:\\22-12-Parabom-Project-new",
+                "fileName.jpg", "oriFileName.jpg");
+        imageInfoDtoList.add(imageInfoDto);
+
+        PostDto.PostDetailDto postDetailDto1 = new PostDto.PostDetailDto(post1);
+        postDetailDto1.setImageDtoList(imageInfoDtoList);
+        PostDto.PostDetailDto postDetailDto2 = new PostDto.PostDetailDto(post2);
+        PostDto.PostDetailDto postDetailDto3 = new PostDto.PostDetailDto(post3);
+        PostDto.PostDetailDto postDetailDto4 = new PostDto.PostDetailDto(post4);
+        PostDto.PostDetailDto postDetailDto5 = new PostDto.PostDetailDto(post5);
+
+        post = post1;
+
+        posts.add(postDetailDto1); postsByCategory.add(postDetailDto1);
+        posts.add(postDetailDto2); postsByCategory.add(postDetailDto2);
+        posts.add(postDetailDto3);
+        posts.add(postDetailDto4); postsByMember.add(postDetailDto4);
+        posts.add(postDetailDto5); postsByCategory.add(postDetailDto5);
+
     }
 
     private Date getDate(int y, int m, int d) {
@@ -99,40 +115,37 @@ public class PostControllerTest {
                 category, hashtag, title, content, member);
     }
 
-    private Image getImage(Post post, Member member, String fileName, String oriFileName, String path) {
-        return Image.createImage(post, member, fileName, oriFileName, path);
+    public String toJsonString(PostDto.PostCreateDto createDto) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(createDto);
     }
 
-    public String toJsonString(Post post) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(post);
-    }
-
-    //@Test
+    @Test
     @DisplayName("게시물 상세조회 테스트")
     @Transactional
     void 게시물_상세조회() throws Exception {
 
-        Post post = beforeEach();
+        setUp();
 
-        given(postService.productDetail(post.getId())).willReturn(
+        given(postService.productDetail(1L)).willReturn(
                 new PostDto.PostDetailDto(post)
         );
 
-        mvc.perform(
-                get("post/productDetial?id=" + post.getId()))
+        mvc.perform(get("/post/productDetail?id=" + 1L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath(post.getMember().getNickname()).exists())
-                .andExpect(jsonPath(post.getName()).exists())
-                .andExpect(jsonPath(post.getTitle()).exists())
-                .andExpect(jsonPath(post.getImages().get(0).getPath()).exists())
+                .andExpect(jsonPath("$.data.id").exists())
+                .andExpect(jsonPath("$.data.name").value("ps5"))
+                .andExpect(jsonPath("$.data.member.nickname").value("nickname1"))
+                .andExpect(jsonPath("$.data.title").value("ps5"))
+                .andExpect(jsonPath("$.data.imageDtoList").exists())
                 .andDo(print());
 
         verify(postService).productDetail(post.getId());
     }
 
+
     @Test
     @DisplayName("게시물 등록 테스트")
+    @Transactional
     void 게시물_등록() throws Exception {
 
         Optional<Member> member = memberRepository.findById(Integer.toUnsignedLong(1));
@@ -146,63 +159,26 @@ public class PostControllerTest {
 
         // 이미지
         List<MultipartFile> multipartFileList = new ArrayList<>();
-        String path = "D:\\22-12-Parabom-Project-new";
-        String imageName = "image.jpg";
         MockMultipartFile multipartFile =
-                    new MockMultipartFile(path, imageName, "image/jpg", new byte[]{1, 2, 3, 4});
+                    new MockMultipartFile("multipartFile", "image.jpg", "image/jpg", new byte[]{1, 2, 3, 4});
         multipartFileList.add(multipartFile);
 
-        List<Image> imageList = new ArrayList<>();
-        for(int i=0; i<2; i++) {
-            Image image = new Image();
-            postCreateDto.setImage(image);
-            imageList.add(image);
-        }
-        postCreateDto.setImages(imageList);
-
-
         // given
-        String content = toJsonString(postCreateDto.toEntity());
-        given(postService.postCreate(postCreateDto, multipartFileList)).willReturn(new PostDto.PostCreateDto().getId());
-
+        String content = toJsonString(postCreateDto);
+        given(postService.postCreate(any(), anyList())).willReturn(new PostDto.PostCreateDto().getId());
 
         // when & then
         mvc.perform(
                 multipart("/post/create")
-                        .file(multipartFile)
+                        .file("image", multipartFile.getBytes())
                         .file(new MockMultipartFile("dto", "", "application/json", content.getBytes(StandardCharsets.UTF_8)))
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8"))
                 .andDo(print())
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk());
 
-
-//        mvc.perform(MockMvcRequestBuilders.
-//                        multipart("/post/create")
-//                        .file(multipartFile)
-//                        .contentType(MediaType.MULTIPART_FORM_DATA)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .characterEncoding("UTF-8")
-//                )
-//                .andExpect(status().isCreated())
-//                //.andExpect( postCreateDto.getImages().get(0).getPath()).exists()
-//                //.andExpect((ResultMatcher) jsonPath(imageList.get(0).getPost().getName()).exists())
-//                .andDo(print());
-//
-//        mvc.perform(
-//                post("/post/create")
-//                        .content(content)
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isCreated())
-//                .andExpect(jsonPath("$.dto").exists())
-//                .andExpect(jsonPath(postCreateDto.getMember().getNickname()).exists())
-//                .andExpect(jsonPath(postCreateDto.getName()).exists())
-//                .andExpect(jsonPath(postCreateDto.getTitle()).exists())
-//                .andDo(print());
-
-
-        verify(postService).postCreate(new PostDto.PostCreateDto(), multipartFileList);
+        verify(postService).postCreate(any(), anyList());
 
     }
 }
