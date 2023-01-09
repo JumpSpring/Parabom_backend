@@ -181,5 +181,4 @@ public class PostControllerTest {
         verify(postService).postCreate(any(), anyList());
 
     }
-
 }

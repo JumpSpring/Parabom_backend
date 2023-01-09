@@ -94,6 +94,62 @@ class PostServiceTest {
     }
 
     @Test
+    @DisplayName("거래 상태 변경 테스트")
+    void changeFinOrIng() {
+        Post post = beforeEach();
+        post.modifyFinOrIng(1);
+        PostDto.ModifyFinOrIngRequest modifyFinOrIngRequest = new PostDto.ModifyFinOrIngRequest(post);
+        postService.modifyFinOrIng(post.getId(), modifyFinOrIngRequest);
+        assertEquals(1, postService.productDetail(post.getId()).getFinOrIng());
+    }
+
+    @Test
+    @DisplayName("게시물 수정 테스트")
+    void modifyPostTest() throws Exception {
+        Post post = beforeEach();
+        Long postId = post.getId();
+
+        List<Image> imageList = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            Image image = new Image();
+            imageList.add(image);
+        }
+
+        PostDto.ModifyRequest modifyRequest =
+                new PostDto.ModifyRequest(imageList, 300000, 1, "Very Good",
+                        "delivery", "기타", "인형");
+        postService.postUpdate(postId, modifyRequest);
+
+        //then
+        assertEquals(300000, postService.productDetail(postId).getPrice());
+        assertEquals(1, postService.productDetail(postId).getOpenOrNot());
+        assertEquals("인형", postService.productDetail(postId).getHashtag());
+        assertEquals(3, post.getImages().size());
+    }
+
+
+    @Test
+    @DisplayName("게시물 삭제 테스트")
+    void deletePostTest() {
+        Post post = beforeEach();
+        Member member = post.getMember();
+
+        List<PostDto.PostDetailDto> beforeDeletePost = postService.getAllPostInfo();
+        int beforePostsSize = member.getPosts().size();
+
+        Long postId = post.getId();
+        postService.postDelete(postId);
+
+        List<PostDto.PostDetailDto> afterDeletePost = postService.getAllPostInfo();
+        int afterPostsSize = member.getPosts().size();
+
+
+        assertEquals(1, beforeDeletePost.size() - afterDeletePost.size());
+        assertEquals(1, beforePostsSize - afterPostsSize);
+        assertEquals(0, imageRepository.findByIdBy(postId).size());
+    }
+
+    @Test
     @DisplayName("게시글 상세조회 테스트")
     public void 게시글_상세조회() throws Exception {
         // given
@@ -229,5 +285,37 @@ class PostServiceTest {
         assertEquals("ps5", dto1.getName());
         assertEquals(500000, dto1.getPrice());
         assertEquals("게임기", dto2.getHashtag());
+    }
+
+    @Test
+    @DisplayName("거래 완료 테스트")
+    void dealCompleteTest() {
+        Post post1 = beforeEach();
+        Post post2 = beforeEach();
+        Post post3 = beforeEach();
+
+        Optional<Member> member = memberRepository.findById(Integer.toUnsignedLong(2));
+
+        PostDto.DealCompleteRequest dealCompleteRequest = new PostDto.DealCompleteRequest(member.get());
+        postService.dealComplete(post1.getId(), dealCompleteRequest);
+        postService.dealComplete(post2.getId(), dealCompleteRequest);
+        postService.dealComplete(post3.getId(), dealCompleteRequest);
+
+        assertEquals(3, member.get().getBuyList().size());
+    }
+
+    @Test
+    @DisplayName("구매 내역 조회 테스트")
+    void getMemberBuyListTest() {
+        Post post1 = beforeEach();
+        Optional<Member> member = memberRepository.findById(Integer.toUnsignedLong(2));
+
+        PostDto.DealCompleteRequest dealCompleteRequest = new PostDto.DealCompleteRequest(member.get());
+        postService.dealComplete(post1.getId(), dealCompleteRequest);
+
+        List<PostDto.PostDetailDto> posts = postService.getMemberBuyList(member.get().getId());
+
+        assertEquals(post1.getName(), posts.get(0).getName());
+
     }
 }
