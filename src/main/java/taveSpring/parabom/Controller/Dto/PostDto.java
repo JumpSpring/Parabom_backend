@@ -2,6 +2,7 @@ package taveSpring.parabom.Controller.Dto;
 
 import lombok.*;
 import org.modelmapper.ModelMapper;
+import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
 
 import java.sql.Timestamp;
@@ -97,5 +98,44 @@ public class PostDto {
         public static PostDto.IdResponse of(Post post){
             return new PostDto.IdResponse(post.getId());
         }
+    }
+
+
+    /*게시물 수정*/
+    @Getter @Setter
+    @AllArgsConstructor
+    public static class ModifyRequest{
+        private int price;
+        private Integer openOrNot;
+        private String status;
+        private String directOrDel;
+        private String category;
+        private String hashtag;
+
+
+        public ModifyRequest( int price,Integer openOrNot, String status, String directOrDel,String hashtag) {
+            this.price = price;
+            this.openOrNot = openOrNot;
+            this.status = status;
+            this.directOrDel = directOrDel;
+            this.hashtag = hashtag;
+        }
+    }
+
+    /*게시물 거래 상태 수정*/
+    @Getter @Setter
+    @AllArgsConstructor
+    public static class ModifyFinOrIngRequest {
+        private Integer finOrIng;
+
+        public ModifyFinOrIngRequest(Post post) {
+            this.finOrIng = post.getFinOrIng();
+        }
+    }
+
+    @Getter @Setter
+    @AllArgsConstructor
+    public static class DealCompleteRequest {
+        private Member buyer;
     }
 }
