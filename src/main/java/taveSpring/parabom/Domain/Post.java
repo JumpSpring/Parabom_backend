@@ -38,22 +38,16 @@ public class Post {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "post")
-    private List<Image> images = new ArrayList<Image>();
+    //UUID = post/images/{post-id}
+    private String image;
 
     @OneToMany(mappedBy = "post")
     private Set<PostLikes> likes = new HashSet<PostLikes>();
 
-    // 연관관계 메서드
-    public void addImages(Image image) {
-        this.images.add(image);
-        image.setPost(this);
-    }
-
     // 생성 메서드
     public static Post createPost(String name, int price, Integer foi, Date datePurchased, Integer openOrNot,
                                   String status, String directOrDel, String category, String hashtag,
-                                  String title, String content, Member member) {
+                                  String title, String content, Member member ,String image) {
         return Post.builder()
                 .name(name)
                 .price(price)
@@ -67,6 +61,7 @@ public class Post {
                 .title(title)
                 .content(content)
                 .member(member)
+                .image(image)
                 .date(Timestamp.valueOf(LocalDateTime.now()))
                 .likes(new HashSet<>())
                 .build();
