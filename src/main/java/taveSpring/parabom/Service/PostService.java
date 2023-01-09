@@ -64,7 +64,7 @@ public class PostService {
         for(int i=0 ; i<imageList.size(); i++){
             Image image = new Image();
             System.out.println("[Info][productCreate SERVICE] imageList.get(0).getName() : " + imageList.get(0).getName());
-            postDto.setImage(image);
+            //postDto.setImage(image);
             image.setPost(post);
             postImageService.saveImage(image, imageList.get(i));
             System.out.println("[Info][productCreate SERVICE] image.getPath() : " + image.getPath());

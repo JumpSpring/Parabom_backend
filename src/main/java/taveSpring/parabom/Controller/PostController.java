@@ -2,10 +2,12 @@ package taveSpring.parabom.Controller;
 
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import taveSpring.parabom.Controller.Dto.ImageDto;
 import taveSpring.parabom.Controller.Dto.PostDto;
 import taveSpring.parabom.Controller.Response.BasicResponse;
@@ -24,9 +26,8 @@ public class PostController {
     private final PostService postService;
     private final PostLikesService postLikesService;
 
-
-
     /* 게시물 상세조회*/
+    // TODO : 로그인 정보 받아오기
     @GetMapping(path = "/productDetail")
     public ResponseEntity<? extends BasicResponse> productDetail(@RequestParam(value="id") Long id) throws Exception {
         return ResponseEntity.ok(new CommonResponse<PostDto.PostDetailDto>(postService.productDetail(id)));
@@ -80,7 +81,7 @@ public class PostController {
 
     /*특정 회원의 게시물 리스트 조회*/
     @GetMapping("/memberPostList")
-    public ResponseEntity<? extends BasicResponse> memberPostList(@RequestParam(value="id") Long memberId) {
+    public ResponseEntity<? extends BasicResponse> memberPostList(@RequestParam(value="memberId") Long memberId) {
         return ResponseEntity.ok().body(new CommonResponse<List>(postService.getMemberPost(memberId)));
     }
 

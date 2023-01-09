@@ -20,7 +20,7 @@ public class PostImageService {
 
 
 
-//    @Value("${custom.path.uploadPath}") // application.yml의 itemImgLocation 값을 불러와서 itemImgLocation 변수에다 넣어줌
+    //@Value("${custom.path.uploadPath}") // application.yml의 itemImgLocation 값을 불러와서 itemImgLocation 변수에다 넣어줌
     private String imageLocation = "D:\\22-12-Parabom-Project-new";
 
     private final ImageRepository imageRepository;
@@ -44,7 +44,6 @@ public class PostImageService {
         // 이미지 정보 저장
         image.updateImage(oriFileName, filename, path);
         imageRepository.save(image);
-//        postRepository.save(image);
+        //postRepository.save(image);
     }
-
 }

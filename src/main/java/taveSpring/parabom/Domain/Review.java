@@ -18,12 +18,12 @@ public class Review {
     private Long id;
 
     //리뷰를 받은 멤버
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "recipient_id")
     private Member recipient;
 
     //리뷰를 보낸 멤버
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id")
     private Member sender;
 
