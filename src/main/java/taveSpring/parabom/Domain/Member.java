@@ -20,8 +20,10 @@ public class Member {
     private String email;
     private String password;
     private String nickname;
-    private String profile;
     private String address;
+
+    //UUID  = user/profile/{id}
+    private String profile; //profile url
 
     //받은 리뷰 리스트
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)
