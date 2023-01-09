@@ -1,16 +1,11 @@
 package taveSpring.parabom.Controller.Dto;
 
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 import org.modelmapper.ModelMapper;
-import taveSpring.parabom.Domain.Image;
-import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 
 public class PostDto {
@@ -23,8 +18,7 @@ public class PostDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class PostDetailDto {
-        private Member member;
-
+        private Long memberId;
         private Long id;
         private String name;
         private int price;
@@ -35,13 +29,10 @@ public class PostDto {
         private String directOrDel;
         private String hashtag;
         private String category;
-
         private String title;
         private String content;
         private Timestamp date;
-
-        // 이미지 정보를 저장하는 리스트
-        private List<ImageDto.ImageInfoDto> imageDtoList = new ArrayList<>();
+        private String image;
 
         public static PostDetailDto of(Post post){
             return modelMapper.map(post, PostDetailDto.class);
@@ -49,7 +40,7 @@ public class PostDto {
         }
 
         public PostDetailDto(Post post) {
-            this.member = post.getMember();
+            this.memberId = post.getMember().getId();
             this.id = post.getId();
             this.name = post.getName();
             this.price = post.getPrice();
@@ -64,12 +55,7 @@ public class PostDto {
             this.content = post.getContent();
             this.date = post.getDate();
             this.category = post.getCategory();
-
-            ImageDto.ImageInfoDto imageInfoDto = new ImageDto.ImageInfoDto();
-            for(int i=0; i<imageDtoList.size(); i++) {
-                imageInfoDto = imageDtoList.get(i);
-            }
-
+            this.image = post.getImage();
         }
 
     }
@@ -80,9 +66,7 @@ public class PostDto {
     @NoArgsConstructor
     @Builder
     public static class PostCreateDto {
-        private Member member;
-
-        private Long id;
+        private Long memberId;
         private String name;
         private int price;
         private Integer finOrIng;
@@ -92,23 +76,26 @@ public class PostDto {
         private String directOrDel;
         private String category;
         private String hashtag;
-
         private String title;
         private String content;
         private Timestamp date;
 
-        private Image image;
-        private List<Image> images = new ArrayList<>();
-
         public Post toEntity() {
-            images.add(image);
-            return Post.builder().id(id).name(name).price(price).finOrIng(finOrIng)
+            return Post.builder().name(name).price(price).finOrIng(finOrIng)
                     .datePurchased(datePurchased).openOrNot(openOrNot)
                     .status(status).directOrDel(directOrDel).category(category).hashtag(hashtag)
                     .title(title).content(content).date(date)
-                    .images(images)
-                    .member(member)
                     .build();
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class IdResponse{
+        private Long id;
+        public static PostDto.IdResponse of(Post post){
+            return new PostDto.IdResponse(post.getId());
         }
     }
 }
