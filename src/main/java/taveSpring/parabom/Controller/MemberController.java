@@ -1,15 +1,20 @@
 package taveSpring.parabom.Controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import taveSpring.parabom.Controller.Dto.MemberDto;
 import taveSpring.parabom.Controller.Response.BasicResponse;
 import taveSpring.parabom.Controller.Response.CommonResponse;
+import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Service.MemberService;
+import taveSpring.parabom.Service.S3Service;
 
 import javax.validation.Valid;
 
+import java.io.IOException;
 import java.util.List;
 
 import static taveSpring.parabom.Controller.Dto.MemberDto.*;
@@ -19,17 +24,28 @@ import static taveSpring.parabom.Controller.Dto.MemberDto.*;
 @RequestMapping("/member")
 //TODO: AWS S3 연결 후 이미지 처리
 public class MemberController {
-
     private final MemberService memberService;
+    private final S3Service s3Service;
 
     /*회원가입*/
     //TODO : Spring Security 적용
-    @PostMapping(path = "/signUp")
+    @PostMapping(path = "/signUp",consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<? extends BasicResponse> signUp(
-           @Valid @RequestBody SaveRequest request
-            ){
+           @Valid @RequestBody SaveRequest request)
+    {
         return ResponseEntity.ok()
                 .body(new CommonResponse<IdResponse>(memberService.signUp(request)));
+    }
+
+    /*프로필 이미지 설정 */
+    @PostMapping(path = "/profile/{member-id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<? extends BasicResponse> setProfile(
+            @PathVariable("member-id") Long id,
+            @RequestPart(value = "file",required = false) MultipartFile profile) throws IOException {
+        String UUID = "user/profile/User"+id;
+        String url = s3Service.uploadFile(profile,UUID);
+        memberService.modifyMemberInfo(id,new ModifyRequest(null,url,null));
+        return ResponseEntity.ok().build();
     }
 
     /*로그인*/
@@ -87,5 +103,4 @@ public class MemberController {
         memberService.deleteMember(id);
         return ResponseEntity.ok().build();
     }
-
 }
