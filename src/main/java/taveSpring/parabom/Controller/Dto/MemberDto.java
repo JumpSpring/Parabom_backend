@@ -22,7 +22,6 @@ public class MemberDto {
         private String password;
         @NotEmpty(message = "닉네임을 입력해주세요.")
         private String nickname;
-        private String profile;
         private String address;
 
         public Member toMember(){
@@ -31,13 +30,11 @@ public class MemberDto {
                     .password(password)
                     .nickname(nickname)
                     .address(address)
-                    .profile(profile)
                     .build();
         }
 
         public static SaveRequest of(Member member) {
-            return new SaveRequest(member.getEmail(),member.getPassword(),
-                    member.getNickname(),member.getProfile(),member.getAddress());
+            return new SaveRequest(member.getEmail(),member.getPassword(), member.getNickname(),member.getAddress());
         }
     }
 
