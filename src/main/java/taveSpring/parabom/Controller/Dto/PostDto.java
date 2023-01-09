@@ -126,13 +126,13 @@ public class PostDto {
         private String hashtag;
 
 
-        public ModifyRequest(Post post) {
-            this.images = post.getImages();
-            this.price = post.getPrice();
-            this.openOrNot = post.getOpenOrNot();
-            this.status = post.getStatus();
-            this.directOrDel = post.getDirectOrDel();
-            this.hashtag = post.getHashtag();
+        public ModifyRequest(List<Image> images, int price,Integer openOrNot, String status, String directOrDel,String hashtag) {
+            this.images = images;
+            this.price = price;
+            this.openOrNot = openOrNot;
+            this.status = status;
+            this.directOrDel = directOrDel;
+            this.hashtag = hashtag;
         }
     }
 
@@ -145,5 +145,11 @@ public class PostDto {
         public ModifyFinOrIngRequest(Post post) {
             this.finOrIng = post.getFinOrIng();
         }
+    }
+
+    @Getter @Setter
+    @AllArgsConstructor
+    public static class DealCompleteRequest {
+        private Member buyer;
     }
 }
