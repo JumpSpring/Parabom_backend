@@ -20,8 +20,10 @@ public class Member {
     private String email;
     private String password;
     private String nickname;
-    private String profile;
     private String address;
+
+    //UUID  = user/profile/{id}
+    private String profile; //profile url
 
     //게시물 리스트
     @OneToMany(mappedBy="member")
@@ -74,8 +76,6 @@ public class Member {
     public void addSendReviews(Review review) {
         sendReviews.add(review);
     }
-
-
 
     public void updateStarPoint(Integer oldStarPoint, Integer newStarPoint) {
         double totalStarPoint = avgStarPoint * myReviews.size();

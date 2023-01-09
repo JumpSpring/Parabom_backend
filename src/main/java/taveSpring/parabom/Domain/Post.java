@@ -2,7 +2,6 @@ package taveSpring.parabom.Domain;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import taveSpring.parabom.Controller.Dto.ImageDto;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -15,6 +14,7 @@ import java.util.*;
 @NoArgsConstructor
 @Builder
 public class Post {
+
     @Id
     @Column(name = "post_id")
     @GeneratedValue
@@ -38,27 +38,19 @@ public class Post {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    //UUID = post/images/{post-id}
+    private String image;
     @ManyToOne
     @JoinColumn(name = "buyer_id")
     private Member buyer;
 
     @OneToMany(mappedBy = "post")
-    private List<Image> images = new ArrayList<Image>();
-
-    @OneToMany(mappedBy = "post")
     private Set<PostLikes> likes = new HashSet<PostLikes>();
-
-
-    // 연관관계 메서드
-    public void addImages(Image image) {
-        this.images.add(image);
-        image.setPost(this);
-    }
 
     // 생성 메서드
     public static Post createPost(String name, int price, Integer foi, Date datePurchased, Integer openOrNot,
                                   String status, String directOrDel, String category, String hashtag,
-                                  String title, String content, Member member) {
+                                  String title, String content, Member member,String image) {
         return Post.builder()
                 .name(name)
                 .price(price)
@@ -72,6 +64,7 @@ public class Post {
                 .title(title)
                 .content(content)
                 .member(member)
+                .image(image)
                 .date(Timestamp.valueOf(LocalDateTime.now()))
                 .likes(new HashSet<>())
                 .build();
@@ -85,11 +78,6 @@ public class Post {
         this.directOrDel = directOrDel;
         this.category = category;
         this.hashtag = hashtag;
-    }
-
-    // 이미지 수정 기능
-    public void updateImage(List<Image> images) {
-        this.images = images;
     }
 
 
