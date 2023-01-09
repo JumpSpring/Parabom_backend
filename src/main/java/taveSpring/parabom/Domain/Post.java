@@ -40,6 +40,9 @@ public class Post {
 
     //UUID = post/images/{post-id}
     private String image;
+    @ManyToOne
+    @JoinColumn(name = "buyer_id")
+    private Member buyer;
 
     @OneToMany(mappedBy = "post")
     private Set<PostLikes> likes = new HashSet<PostLikes>();
@@ -47,7 +50,7 @@ public class Post {
     // 생성 메서드
     public static Post createPost(String name, int price, Integer foi, Date datePurchased, Integer openOrNot,
                                   String status, String directOrDel, String category, String hashtag,
-                                  String title, String content, Member member ,String image) {
+                                  String title, String content, Member member,String image) {
         return Post.builder()
                 .name(name)
                 .price(price)
@@ -65,5 +68,27 @@ public class Post {
                 .date(Timestamp.valueOf(LocalDateTime.now()))
                 .likes(new HashSet<>())
                 .build();
+    }
+
+    // 게시물 수정 기능
+    public void update(int price, Integer openOrNot, String status, String directOrDel, String category, String hashtag) {
+        this.price = price;
+        this.openOrNot = openOrNot;
+        this.status = status;
+        this.directOrDel = directOrDel;
+        this.category = category;
+        this.hashtag = hashtag;
+    }
+
+
+    // 게시물 거래 상태 수정 기능
+    public void modifyFinOrIng(Integer finOrIng) {
+        this.finOrIng = finOrIng;
+    }
+
+    //거래완료
+    public void dealComplete(Member buyer) {
+        this.finOrIng = 1;
+        this.buyer = buyer;
     }
 }
