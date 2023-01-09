@@ -24,6 +24,7 @@ public class PostImageService {
     private String imageLocation = "D:\\22-12-Parabom-Project-new";
 
     private final ImageRepository imageRepository;
+    private final PostRepository postRepository;
     private final FileService fileService;
 
     public void saveImage(Image image, MultipartFile imagefile) throws Exception{

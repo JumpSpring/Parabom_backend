@@ -111,4 +111,45 @@ public class PostDto {
                     .build();
         }
     }
+
+
+    /*게시물 수정*/
+    @Getter @Setter
+    @AllArgsConstructor
+    public static class ModifyRequest{
+        private List<Image> images;
+        private int price;
+        private Integer openOrNot;
+        private String status;
+        private String directOrDel;
+        private String category;
+        private String hashtag;
+
+
+        public ModifyRequest(List<Image> images, int price,Integer openOrNot, String status, String directOrDel,String hashtag) {
+            this.images = images;
+            this.price = price;
+            this.openOrNot = openOrNot;
+            this.status = status;
+            this.directOrDel = directOrDel;
+            this.hashtag = hashtag;
+        }
+    }
+
+    /*게시물 거래 상태 수정*/
+    @Getter @Setter
+    @AllArgsConstructor
+    public static class ModifyFinOrIngRequest {
+        private Integer finOrIng;
+
+        public ModifyFinOrIngRequest(Post post) {
+            this.finOrIng = post.getFinOrIng();
+        }
+    }
+
+    @Getter @Setter
+    @AllArgsConstructor
+    public static class DealCompleteRequest {
+        private Member buyer;
+    }
 }
