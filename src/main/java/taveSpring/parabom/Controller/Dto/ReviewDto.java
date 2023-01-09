@@ -58,4 +58,56 @@ public class ReviewDto {
         @Range(min = 1, max = 5)
         private Integer starPoint;
     }
+
+    /// 코드 추가 부분 ///
+
+    // 전체 review 조회 클래스
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReviewListDto {
+        private Long id;
+        private String senderType;
+        private String itemName;
+        private String text;
+        private Integer starPoint;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+
+        public ReviewListDto(Review review) {
+            this.id = review.getId();
+            this.senderType = String.valueOf(review.getSenderType());
+            this.itemName = review.getItemName();
+            this.text = review.getText();
+            this.starPoint = review.getStarPoint();
+            this.createdAt = review.getCreatedAt();
+            this.updatedAt = review.getUpdatedAt();
+        }
+
+
+    }
+
+    // test class
+    // testcode 작성 위해 만든 클래스
+    // 추후 필요하면 추가해주기
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReviewResponse {
+        private Long id;
+        private String itemName;
+        private String text;
+        private Integer starPoint;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+
+        public static ReviewResponse of(Review review) {
+            return new ReviewResponse(review.getId(), review.getItemName(), review.getText(),
+                    review.getStarPoint(), review.getCreatedAt(), review.getUpdatedAt());
+        }
+    }
+
+
+    /// 코드 추가 부분 ///
+
 }
