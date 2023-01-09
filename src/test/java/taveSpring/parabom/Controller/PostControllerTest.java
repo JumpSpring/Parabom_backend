@@ -155,5 +155,4 @@ public class PostControllerTest {
                 .andExpect(jsonPath("$.data.id").exists());
 
     }
-
 }

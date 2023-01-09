@@ -25,6 +25,15 @@ public class Member {
     //UUID  = user/profile/{id}
     private String profile; //profile url
 
+    //게시물 리스트
+    @OneToMany(mappedBy="member")
+    private List<Post> posts = new ArrayList<>();
+
+    //구매 내역 리스트
+    @OneToMany(mappedBy = "buyer")
+    private List<Post> buyList = new ArrayList<Post>();
+
+
     //받은 리뷰 리스트
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)
     private final List<Review> myReviews = new ArrayList<>();
@@ -89,5 +98,9 @@ public class Member {
 
     public void deleteSendReview(Review review) {
         sendReviews.remove(review);
+    }
+
+    public void addBuyList(Post post) {
+        buyList.add(post);
     }
 }

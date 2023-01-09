@@ -2,6 +2,7 @@ package taveSpring.parabom.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import taveSpring.parabom.Controller.Dto.PostDto;
 import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
 import taveSpring.parabom.Repository.MemberRepository;
@@ -76,4 +77,53 @@ public class PostService {
                 .map(post -> new PostDetailDto(post)).collect(Collectors.toList());
     }
 
+
+
+    /*구매 상태 변경*/
+    @Transactional
+    public void modifyFinOrIng(Long postId, PostDto.ModifyFinOrIngRequest request) {
+        // 상태변경 기능
+        Post post = postRepository.findById(postId)
+                .orElseThrow(()->new IllegalArgumentException("게시물 정보가 없습니다."));
+        post.modifyFinOrIng(request.getFinOrIng());
+    }
+
+    /*거래 완료*/
+    @Transactional
+    public void dealComplete(Long postId, PostDto.DealCompleteRequest request) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(()->new IllegalArgumentException("게시물 정보가 없습니다."));
+        post.dealComplete(request.getBuyer());
+        request.getBuyer().addBuyList(post);
+    }
+
+    /*게시물 삭제*/
+    @Transactional
+    public void postDelete(Long id) {
+        Post post = postRepository.findById(id)
+                        .orElseThrow(()-> new IllegalArgumentException("게시물 정보가 없습니다."));
+        Member member = post.getMember();
+        member.getPosts().remove(post);
+        postRepository.delete(post);
+    }
+
+    /*게시물 수정*/
+    @Transactional
+    public void postUpdate(Long id, PostDto.ModifyRequest request) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(()-> new IllegalArgumentException("게시물 정보가 없습니다."));
+        // 글 수정
+        post.update(request.getPrice(), request.getOpenOrNot(), request.getStatus(),
+                request.getDirectOrDel(), request.getCategory(), request.getHashtag());
+
+    }
+
+    /*구매 내역 조회*/
+    public List<PostDto.PostDetailDto> getMemberBuyList(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(()-> new IllegalArgumentException("회원 정보가 없습니다."));
+        List<Post> posts = member.getBuyList();
+        return posts.stream()
+                .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());
+    }
 }
