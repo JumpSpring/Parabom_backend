@@ -99,17 +99,15 @@ class PostServiceTest {
         Post post = beforeEach();
         post.modifyFinOrIng(1);
         PostDto.ModifyFinOrIngRequest modifyFinOrIngRequest = new PostDto.ModifyFinOrIngRequest(post);
-        postService.modifyFinOrIng(post.getId(),modifyFinOrIngRequest);
+        postService.modifyFinOrIng(post.getId(), modifyFinOrIngRequest);
         assertEquals(1, postService.productDetail(post.getId()).getFinOrIng());
     }
 
     @Test
     @DisplayName("게시물 수정 테스트")
-    void modifyPost() throws Exception {
+    void modifyPostTest() throws Exception {
         Post post = beforeEach();
         Long postId = post.getId();
-
-        post.update(300000, 1, "Very Good", "delivery", "기타", "인형");
 
         List<Image> imageList = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
@@ -117,22 +115,22 @@ class PostServiceTest {
             imageList.add(image);
         }
 
-        post.updateImage(imageList);
-
-        PostDto.ModifyRequest modifyRequest = new PostDto.ModifyRequest(post);
+        PostDto.ModifyRequest modifyRequest =
+                new PostDto.ModifyRequest(imageList, 300000, 1, "Very Good",
+                        "delivery", "기타", "인형");
         postService.postUpdate(postId, modifyRequest);
 
         //then
         assertEquals(300000, postService.productDetail(postId).getPrice());
         assertEquals(1, postService.productDetail(postId).getOpenOrNot());
         assertEquals("인형", postService.productDetail(postId).getHashtag());
-        assertEquals(3, postService.productDetail(postId).getImages().size());
+        assertEquals(3, post.getImages().size());
     }
 
 
     @Test
     @DisplayName("게시물 삭제 테스트")
-    void deletePost() {
+    void deletePostTest() {
         Post post = beforeEach();
         Member member = post.getMember();
 
@@ -287,5 +285,37 @@ class PostServiceTest {
         assertEquals("ps5", dto1.getName());
         assertEquals(500000, dto1.getPrice());
         assertEquals("게임기", dto2.getHashtag());
+    }
+
+    @Test
+    @DisplayName("거래 완료 테스트")
+    void dealCompleteTest() {
+        Post post1 = beforeEach();
+        Post post2 = beforeEach();
+        Post post3 = beforeEach();
+
+        Optional<Member> member = memberRepository.findById(Integer.toUnsignedLong(2));
+
+        PostDto.DealCompleteRequest dealCompleteRequest = new PostDto.DealCompleteRequest(member.get());
+        postService.dealComplete(post1.getId(), dealCompleteRequest);
+        postService.dealComplete(post2.getId(), dealCompleteRequest);
+        postService.dealComplete(post3.getId(), dealCompleteRequest);
+
+        assertEquals(3, member.get().getBuyList().size());
+    }
+
+    @Test
+    @DisplayName("구매 내역 조회 테스트")
+    void getMemberBuyListTest() {
+        Post post1 = beforeEach();
+        Optional<Member> member = memberRepository.findById(Integer.toUnsignedLong(2));
+
+        PostDto.DealCompleteRequest dealCompleteRequest = new PostDto.DealCompleteRequest(member.get());
+        postService.dealComplete(post1.getId(), dealCompleteRequest);
+
+        List<PostDto.PostDetailDto> posts = postService.getMemberBuyList(member.get().getId());
+
+        assertEquals(post1.getName(), posts.get(0).getName());
+
     }
 }

@@ -38,6 +38,10 @@ public class Post {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @ManyToOne
+    @JoinColumn(name = "buyer_id")
+    private Member buyer;
+
     @OneToMany(mappedBy = "post")
     private List<Image> images = new ArrayList<Image>();
 
@@ -92,5 +96,11 @@ public class Post {
     // 게시물 거래 상태 수정 기능
     public void modifyFinOrIng(Integer finOrIng) {
         this.finOrIng = finOrIng;
+    }
+
+    //거래완료
+    public void dealComplete(Member buyer) {
+        this.finOrIng = 1;
+        this.buyer = buyer;
     }
 }
