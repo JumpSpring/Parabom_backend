@@ -51,6 +51,7 @@ public class PostControllerTest {
     List<PostDto.PostDetailDto> posts = new ArrayList<>();
     List<PostDto.PostDetailDto> postsByCategory = new ArrayList<>();
     List<PostDto.PostDetailDto> postsByMember = new ArrayList<>();
+    List<PostDto.PostDetailDto> buyList = new ArrayList<>();
 
     public void setUp() throws Exception {
         Optional<Member> member1 = memberRepository.findByEmail("email1@gmail.com");
@@ -92,6 +93,11 @@ public class PostControllerTest {
         posts.add(postDetailDto4); postsByMember.add(postDetailDto4);
         posts.add(postDetailDto5); postsByCategory.add(postDetailDto5);
 
+        buyList.add(postDetailDto1);
+        buyList.add(postDetailDto2);
+        buyList.add(postDetailDto3);
+        buyList.add(postDetailDto4);
+        buyList.add(postDetailDto5);
     }
 
     private Date getDate(int y, int m, int d) {
@@ -109,6 +115,10 @@ public class PostControllerTest {
 
     public String toJsonString(PostDto.PostCreateDto createDto) throws JsonProcessingException {
         return objectMapper.writeValueAsString(createDto);
+    }
+
+    public String toJsonString(PostDto.ModifyRequest modifyRequest) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(modifyRequest);
     }
 
     @Test
@@ -180,5 +190,74 @@ public class PostControllerTest {
                         .characterEncoding("UTF-8"))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("게시물 수정 테스트")
+    @Transactional
+    void 게시물_수정() throws Exception {
+        setUp();
+
+        PostDto.ModifyRequest modifyRequest =
+                new PostDto.ModifyRequest(500000, 1, "veryGood", "delivery", "etc");
+        String requestJson = toJsonString(modifyRequest);
+
+
+        mvc.perform(patch("/post/1")
+                        .content(requestJson)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+    }
+
+    @Test
+    @DisplayName("거래상태 변경 테스트")
+    @Transactional
+    void 거래상태_변경() throws Exception {
+        setUp();
+
+        mvc.perform(patch("/post/productState/1?finOrIng=1"))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("게시물 삭제 테스트")
+    @Transactional
+    void 게시물_삭제() throws Exception {
+        setUp();
+
+        mvc.perform(delete("/post/1"))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("거래 완료 테스트")
+    @Transactional
+    void 거래_완료() throws Exception {
+        setUp();
+
+        mvc.perform(patch("/post/dealComplete/1?buyerId=3"))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("구매 내역 조회 테스트")
+    void 구매내역_조회() throws Exception {
+        setUp();
+
+        given(postService.getMemberBuyList(1L)).willReturn(buyList);
+
+        mvc.perform(get("/post/buylist/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.[0].name").value("ps5"))
+                .andExpect(jsonPath("$.data.[1].price").value(1700000))
+                .andExpect(jsonPath("$.data.[2].directOrDel").value("direct"))
+                .andExpect(jsonPath("$.data.[3].hashtag").value("도서"))
+                .andExpect(jsonPath("$.data.[4].status").value("good"))
+                .andDo(print());
     }
 }
