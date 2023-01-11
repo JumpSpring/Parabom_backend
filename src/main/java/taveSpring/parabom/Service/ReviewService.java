@@ -3,10 +3,14 @@ package taveSpring.parabom.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import taveSpring.parabom.Controller.Dto.ReviewDto;
 import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Review;
 import taveSpring.parabom.Repository.MemberRepository;
 import taveSpring.parabom.Repository.ReviewRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static taveSpring.parabom.Controller.Dto.ReviewDto.*;
 
@@ -55,4 +59,44 @@ public class ReviewService {
 
         reviewRepository.delete(review);
     }
+
+    /// 코드 추가 부분 ///
+
+    // 전체 후기 조회
+    public List<ReviewListDto> getReviewList(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보가 없습니다."));
+        return member.getMyReviews().stream()
+                .map(review -> new ReviewListDto(review)).collect(Collectors.toList());
+    }
+
+    // 후기 상세 조회 (판매자 후기만 보기)
+    public List<ReviewDto.ReviewListDto> getReviewListBySeller(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보가 없습니다."));
+        return member.getMyReviews().stream()
+                .filter(review -> review.getSenderType().equals("SELLER"))
+                .map(review -> new ReviewListDto(review)).collect(Collectors.toList());
+    }
+
+    // 후기 상세 조회 (구매자 후기만 보기)
+    public List<ReviewDto.ReviewListDto> getReviewListByBuyer(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보가 없습니다."));
+        return member.getMyReviews().stream()
+                .filter(review -> review.getSenderType().equals("BUYER"))
+                .map(review -> new ReviewListDto(review)).collect(Collectors.toList());
+    }
+
+    // 별점 조회
+    public Double getStarPoint(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보가 없습니다."));
+        return member.getAvgStarPoint();
+    }
+
+
+    /// 코드 추가 부분 ///
+
+
 }

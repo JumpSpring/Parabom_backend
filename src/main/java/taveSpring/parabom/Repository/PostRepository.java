@@ -1,7 +1,6 @@
 package taveSpring.parabom.Repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import taveSpring.parabom.Domain.Image;
 import taveSpring.parabom.Domain.Post;
 
 import java.util.List;
@@ -13,9 +12,6 @@ public interface PostRepository  extends JpaRepository<Post,Long>, PostRepositor
 
     /* 찜한 게시글 목록 조회 */
     //List<Post> findAllListOfLiked(Long memberId); // member fetch join
-
-    /* Post 엔티티에 Image 저장*/
-    //List<Image> save(Image image);
 
     List<Post> findAllByMemberId(Long memberId);
 }
