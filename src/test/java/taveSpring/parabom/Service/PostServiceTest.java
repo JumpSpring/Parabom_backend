@@ -268,4 +268,19 @@ class PostServiceTest {
         assertEquals(post1.getName(), posts.get(0).getName());
     }
 
+    @Test
+    @DisplayName("이미지 URL 추가 테스트")
+    void 이미지_URL_추가() {
+
+        // given
+        Post post1 = beforeEach();
+        String url = "post/images/post/1";
+
+        // when
+        postService.addImageURL(post1.getId(), url);
+
+        // then
+        assertEquals("post/images/post/1", post1.getImage());
+    }
+
 }
