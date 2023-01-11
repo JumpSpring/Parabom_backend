@@ -90,6 +90,4 @@ public class PostController {
             @ModelAttribute("postSearch") PostSearch postSearch) {
         return ResponseEntity.ok().body(new CommonResponse<List>(postService.getPostBySearch(postSearch)));
     }
-
-
 }
