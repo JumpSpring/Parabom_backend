@@ -1,5 +1,6 @@
 package taveSpring.parabom.Repository;
 
+import taveSpring.parabom.Controller.Dto.PostSearch;
 import taveSpring.parabom.Domain.Post;
 
 import java.util.List;
@@ -11,4 +12,6 @@ public interface PostRepositoryCustom {
 
     /* 찜한 게시글 목록 조회 */
     List<Post> findAllListOfLiked(Long memberId); // member fetch join
+
+    List<Post> searchPosts(PostSearch postSearch);
 }

@@ -3,6 +3,7 @@ package taveSpring.parabom.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import taveSpring.parabom.Controller.Dto.PostDto;
+import taveSpring.parabom.Controller.Dto.PostSearch;
 import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
 import taveSpring.parabom.Repository.MemberRepository;
@@ -124,6 +125,11 @@ public class PostService {
                 .orElseThrow(()-> new IllegalArgumentException("회원 정보가 없습니다."));
         List<Post> posts = member.getBuyList();
         return posts.stream()
+                .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());
+    }
+
+    public List<PostDto.PostDetailDto> getPostBySearch(PostSearch postSearch) {
+        return postRepository.searchPosts(postSearch).stream()
                 .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());
     }
 }

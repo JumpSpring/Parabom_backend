@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import taveSpring.parabom.Controller.Dto.PostDto;
+import taveSpring.parabom.Controller.Dto.PostSearch;
 import taveSpring.parabom.Controller.Response.BasicResponse;
 import taveSpring.parabom.Controller.Response.CommonResponse;
 import taveSpring.parabom.Service.PostLikesService;
@@ -131,5 +132,11 @@ public class PostController {
         postService.getMemberBuyList(id);
         return ResponseEntity.ok()
                 .body(new CommonResponse<List>(postService.getMemberBuyList(id)));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<? extends BasicResponse> postSearch(
+            @ModelAttribute("postSearch") PostSearch postSearch) {
+        return ResponseEntity.ok().body(new CommonResponse<List>(postService.getPostBySearch(postSearch)));
     }
 }
