@@ -76,8 +76,7 @@ class PostServiceTest {
     void changeFinOrIng() {
         Post post = beforeEach();
         post.modifyFinOrIng(1);
-        PostDto.ModifyFinOrIngRequest modifyFinOrIngRequest = new PostDto.ModifyFinOrIngRequest(post);
-        postService.modifyFinOrIng(post.getId(), modifyFinOrIngRequest);
+        postService.modifyFinOrIng(post.getId(), 1);
         assertEquals(1, postService.productDetail(post.getId()).getFinOrIng());
     }
 
@@ -249,10 +248,9 @@ class PostServiceTest {
 
         Optional<Member> member = memberRepository.findById(Integer.toUnsignedLong(2));
 
-        PostDto.DealCompleteRequest dealCompleteRequest = new PostDto.DealCompleteRequest(member.get());
-        postService.dealComplete(post1.getId(), dealCompleteRequest);
-        postService.dealComplete(post2.getId(), dealCompleteRequest);
-        postService.dealComplete(post3.getId(), dealCompleteRequest);
+        postService.dealComplete(post1.getId(), member.get().getId());
+        postService.dealComplete(post2.getId(), member.get().getId());
+        postService.dealComplete(post3.getId(), member.get().getId());
 
         assertEquals(3, member.get().getBuyList().size());
     }
@@ -263,8 +261,7 @@ class PostServiceTest {
         Post post1 = beforeEach();
         Optional<Member> member = memberRepository.findById(Integer.toUnsignedLong(2));
 
-        PostDto.DealCompleteRequest dealCompleteRequest = new PostDto.DealCompleteRequest(member.get());
-        postService.dealComplete(post1.getId(), dealCompleteRequest);
+        postService.dealComplete(post1.getId(), member.get().getId());
 
         List<PostDto.PostDetailDto> posts = postService.getMemberBuyList(member.get().getId());
 
