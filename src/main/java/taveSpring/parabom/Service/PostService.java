@@ -77,24 +77,24 @@ public class PostService {
                 .map(post -> new PostDetailDto(post)).collect(Collectors.toList());
     }
 
-
-
     /*구매 상태 변경*/
     @Transactional
-    public void modifyFinOrIng(Long postId, PostDto.ModifyFinOrIngRequest request) {
+    public void modifyFinOrIng(Long postId, Integer finOrIng) {
         // 상태변경 기능
         Post post = postRepository.findById(postId)
                 .orElseThrow(()->new IllegalArgumentException("게시물 정보가 없습니다."));
-        post.modifyFinOrIng(request.getFinOrIng());
+        post.modifyFinOrIng(finOrIng);
     }
 
     /*거래 완료*/
     @Transactional
-    public void dealComplete(Long postId, PostDto.DealCompleteRequest request) {
+    public void dealComplete(Long postId, Long buyerId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(()->new IllegalArgumentException("게시물 정보가 없습니다."));
-        post.dealComplete(request.getBuyer());
-        request.getBuyer().addBuyList(post);
+        Member buyer = memberRepository.findById(buyerId)
+                        .orElseThrow(()-> new IllegalArgumentException("회원 정보가 없습니다."));
+        post.dealComplete(buyer);
+        buyer.addBuyList(post);
     }
 
     /*게시물 삭제*/
@@ -119,8 +119,8 @@ public class PostService {
     }
 
     /*구매 내역 조회*/
-    public List<PostDto.PostDetailDto> getMemberBuyList(Long id) {
-        Member member = memberRepository.findById(id)
+    public List<PostDto.PostDetailDto> getMemberBuyList(Long memberId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(()-> new IllegalArgumentException("회원 정보가 없습니다."));
         List<Post> posts = member.getBuyList();
         return posts.stream()
