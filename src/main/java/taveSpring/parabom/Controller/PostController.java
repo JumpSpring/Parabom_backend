@@ -97,7 +97,7 @@ public class PostController {
     /*게시물 수정*/
     @PatchMapping("/{post-id}")
     public ResponseEntity<? extends BasicResponse> modifyPost(@PathVariable("post-id") Long postId,
-                                                              PostDto.ModifyRequest request) {
+                                                              @RequestBody PostDto.ModifyRequest request) {
         postService.postUpdate(postId, request);
         return ResponseEntity.ok().build();
     }
@@ -105,8 +105,8 @@ public class PostController {
     /*구매 상태 변경*/
     @PatchMapping(path = "/productState/{post-id}")
     public ResponseEntity<? extends BasicResponse> changeFinOrIng(@PathVariable("post-id") Long postId,
-                                                                  PostDto.ModifyFinOrIngRequest request) {
-        postService.modifyFinOrIng(postId, request);
+                                                                  @RequestParam(value="finOrIng") Integer finOrIng) {
+        postService.modifyFinOrIng(postId, finOrIng);
         return ResponseEntity.ok().build();
     }
 
@@ -118,18 +118,16 @@ public class PostController {
     }
 
     /*거래 완료*/
-    @PatchMapping(path = "{post-id}/dealComplete")
+    @PatchMapping(path = "/dealComplete/{post-id}")
     public ResponseEntity<? extends BasicResponse> dealComplete(@PathVariable("post-id") Long postId,
-                                                                PostDto.DealCompleteRequest request) {
-        postService.dealComplete(postId, request);
+                                                                @RequestParam(value="buyerId") Long buyerId) {
+        postService.dealComplete(postId, buyerId);
         return ResponseEntity.ok().build();
     }
 
     /*구매 내역 조회*/
-    @GetMapping(path="/{member-id}/buylist")
-    public ResponseEntity<? extends BasicResponse> getMemberBuyList(
-            @PathVariable("member-id") Long id
-    ) {
+    @GetMapping(path="/buylist/{member-id}")
+    public ResponseEntity<? extends BasicResponse> getMemberBuyList(@PathVariable("member-id") Long id) {
         postService.getMemberBuyList(id);
         return ResponseEntity.ok()
                 .body(new CommonResponse<List>(postService.getMemberBuyList(id)));
