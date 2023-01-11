@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +18,9 @@ import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
 import taveSpring.parabom.Repository.MemberRepository;
 import taveSpring.parabom.Service.PostService;
+import taveSpring.parabom.Service.S3Service;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -41,6 +44,8 @@ public class PostControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     MemberRepository memberRepository;
+    @MockBean
+    S3Service s3Service;
 
     Post post = new Post();
     List<PostDto.PostDetailDto> posts = new ArrayList<>();
@@ -163,7 +168,28 @@ public class PostControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.id").exists());
+    }
 
+    @Test
+    @DisplayName("게시물 이미지 설정 테스트")
+    @Transactional
+    void 게시물_이미지_설정() throws Exception {
+
+        setUp();
+        MockMultipartFile multipartFile =
+                new MockMultipartFile("multipartFile", "image.jpg", "image/jpg", new byte[]{1, 2, 3, 4});
+
+        String url = s3Service.uploadFile(multipartFile, "post/images/post/1");
+        postService.addImageURL(1L, url);
+
+        mvc.perform(
+                multipart("/post/image/{post-id}", "1")
+                        .file("file", multipartFile.getBytes())
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8"))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test
