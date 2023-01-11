@@ -3,11 +3,8 @@ package taveSpring.parabom.Repository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.util.StringUtils;
 import taveSpring.parabom.Controller.Dto.PostSearch;
 import taveSpring.parabom.Domain.Post;
-import taveSpring.parabom.Domain.QMember;
-import taveSpring.parabom.Domain.QPost;
 
 import javax.persistence.EntityManager;
 import java.util.Date;
@@ -45,15 +42,15 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                 .join(post.member, member)
                 .where(getNameContains(postSearch.getName()),
                         getPriceContains(postSearch.getPrice()),
-                        getFinOrIng(postSearch.getFinOrIng()),
-                        getDatePurchased(postSearch.getDatePurchased()),
-                        getOpenOrNot(postSearch.getOpenOrNot()),
-                        getStatus(postSearch.getStatus()),
-                        getDirectOrDel(postSearch.getDirectOrDel()),
-                        getCategory(postSearch.getCategory()),
-                        getHashtag(postSearch.getHashtag()),
-                        getTitle(postSearch.getTitle()),
-                        getContent(postSearch.getContent()))
+                        getFinOrIngContains(postSearch.getFinOrIng()),
+                        getDatePurchasedContains(postSearch.getDatePurchased()),
+                        getOpenOrNotContains(postSearch.getOpenOrNot()),
+                        getStatusContains(postSearch.getStatus()),
+                        getDirectOrDelContains(postSearch.getDirectOrDel()),
+                        getCategoryContains(postSearch.getCategory()),
+                        getHashtagContains(postSearch.getHashtag()),
+                        getTitleContains(postSearch.getTitle()),
+                        getContentContains(postSearch.getContent()))
                 .fetch();
     }
 
@@ -68,40 +65,40 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
     }
 
     // 거래중 or 거래완료 검색
-    private BooleanExpression getFinOrIng(Integer finOrIng) {
+    private BooleanExpression getFinOrIngContains(Integer finOrIng) {
         return finOrIng != null ? post.finOrIng.eq(finOrIng) : null;
     }
 
     // 입력된 구매날짜 기준으로 현재까지의 구매날짜를 가진 post 검색
-    private BooleanExpression getDatePurchased(Date startDate) {
+    private BooleanExpression getDatePurchasedContains(Date startDate) {
         return startDate != null ? post.datePurchased.goe(startDate) : null;
     }
 
-    private BooleanExpression getOpenOrNot(Integer openOrNot) {
+    private BooleanExpression getOpenOrNotContains(Integer openOrNot) {
         return openOrNot != null ? post.openOrNot.eq(openOrNot) : null;
     }
 
-    private BooleanExpression getStatus(String status) {
+    private BooleanExpression getStatusContains(String status) {
         return hasText(status) ? post.status.contains(status) : null;
     }
 
-    private BooleanExpression getDirectOrDel(String directOrDel) {
+    private BooleanExpression getDirectOrDelContains(String directOrDel) {
         return hasText(directOrDel) ? post.directOrDel.eq(directOrDel) : null;
     }
 
-    private BooleanExpression getCategory(String category) {
+    private BooleanExpression getCategoryContains(String category) {
         return hasText(category) ? post.category.eq(category) : null;
     }
 
-    private BooleanExpression getHashtag(String hashtag) {
+    private BooleanExpression getHashtagContains(String hashtag) {
         return hasText(hashtag) ? post.hashtag.contains(hashtag) : null;
     }
 
-    private BooleanExpression getTitle(String title) {
+    private BooleanExpression getTitleContains(String title) {
         return hasText(title) ? post.title.contains(title) : null;
     }
 
-    private BooleanExpression getContent(String content) {
+    private BooleanExpression getContentContains(String content) {
         return hasText(content) ? post.content.contains(content) : null;
     }
 }

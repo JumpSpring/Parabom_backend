@@ -15,6 +15,7 @@ import taveSpring.parabom.Domain.Post;
 import taveSpring.parabom.Domain.PostLikes;
 import taveSpring.parabom.Repository.ImageRepository;
 import taveSpring.parabom.Repository.MemberRepository;
+import taveSpring.parabom.Repository.PostLikesRepository;
 import taveSpring.parabom.Repository.PostRepository;
 
 import javax.transaction.Transactional;
@@ -38,6 +39,8 @@ class PostServiceTest {
     PostLikesService postLikesService;
     @Autowired
     ImageRepository imageRepository;
+    @Autowired
+    private PostLikesRepository postLikesRepository;
 
     private Date getDate(int y, int m, int d) {
         Calendar cal = Calendar.getInstance();
@@ -307,5 +310,42 @@ class PostServiceTest {
         assertEquals("ps5", postDetailDto.getName());
         assertEquals("nickname1", postDetailDto.getMemberInfoResponse().getNickname());
         assertEquals("전자제품", postDetailDto.getCategory());
+    }
+
+    @Test
+    @DisplayName("구매 시기, 거래 방식 필터링 검색")
+    public void searchTest4() throws Exception {
+        setUp();
+
+        PostSearch postSearch = new PostSearch();
+        postSearch.setDatePurchased(getDate(2021, 1, 1));
+        postSearch.setDirectOrDel("del");
+
+        List<PostDto.PostDetailDto> postDetailDtos = postService.getPostBySearch(postSearch);
+        assertEquals(0, postDetailDtos.size());
+
+        PostSearch postSearch2 = new PostSearch();
+        postSearch2.setDatePurchased(getDate(2021, 1, 1));
+        postSearch2.setDirectOrDel("direct");
+
+        List<PostDto.PostDetailDto> postDetailDtos2 = postService.getPostBySearch(postSearch2);
+        assertEquals(2, postDetailDtos2.size());
+    }
+
+    @Test
+    @DisplayName("제목, 내용으로 필터링 검색")
+    public void searchTest5() throws Exception {
+        setUp();
+
+        PostSearch postSearch = new PostSearch();
+        postSearch.setTitle("o");
+
+        List<PostDto.PostDetailDto> postDetailDtos = postService.getPostBySearch(postSearch);
+        assertEquals(3, postDetailDtos.size());
+
+        postSearch.setContent("b");
+
+        List<PostDto.PostDetailDto> postDetailDtos2 = postService.getPostBySearch(postSearch);
+        assertEquals(2, postDetailDtos2.size());
     }
 }
