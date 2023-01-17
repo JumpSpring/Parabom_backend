@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import taveSpring.parabom.Controller.Dto.PostDto;
+import taveSpring.parabom.Controller.Dto.PostSearch;
 import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
 import taveSpring.parabom.Domain.PostLikes;
@@ -53,6 +54,38 @@ class PostServiceTest {
                          String title, String content, Member member,String imageURL) {
         return Post.createPost(name, price, foi, datePurchased, openOrNot, status, directOrDel,
                 category, hashtag, title, content, member,imageURL);
+    }
+
+    public void setUp() {
+        Optional<Member> member1 = memberRepository.findByEmail("email1@gmail.com");
+        Optional<Member> member2 = memberRepository.findByEmail("email2@gmail.com");
+        Optional<Member> member3 = memberRepository.findByEmail("email3@gmail.com");
+
+        Post post1 = getPost("ps5", 500000, 0, getDate(2018, 8, 15),
+                0, "good", "direct", "전자제품", "게임기", "ps5",
+                "ps5", member1.get(), "imageURL1");
+
+        Post post2 = getPost("MacBook", 1700000, 0, getDate(2020, 1, 1),
+                0, "good", "direct", "전자제품", "노트북", "MacBook",
+                "MacBook", member2.get(), "imageURL2");
+
+        Post post3 = getPost("clothes", 10000, 0, getDate(2022, 8, 15),
+                0, "good", "direct", "의류", "옷", "clothes",
+                "clothes", member1.get(), "imageURL3");
+
+        Post post4 = getPost("book", 5000, 0, getDate(2020, 8, 15),
+                0, "good", "direct", "도서", "도서", "book",
+                "book", member3.get(), "imageURL4");
+
+        Post post5 = getPost("tv", 800000, 0, getDate(2021, 8, 15),
+                0, "good", "direct", "전자제품", "tv", "tv",
+                "tv", member2.get(), "imageURL5");
+
+        postRepository.save(post1);
+        postRepository.save(post2);
+        postRepository.save(post3);
+        postRepository.save(post4);
+        postRepository.save(post5);
     }
 
 
@@ -268,4 +301,85 @@ class PostServiceTest {
         assertEquals(post1.getName(), posts.get(0).getName());
     }
 
+    @Test
+    @DisplayName("name으로만 검색 조회 테스트")
+    public void searchTest1() throws Exception {
+        setUp();
+
+        PostSearch postSearch = new PostSearch();
+        postSearch.setName("tv");
+
+        List<PostDto.PostDetailDto> postDetailDtos = postService.getPostBySearch(postSearch);
+        assertEquals(1, postDetailDtos.size());
+
+        PostDto.PostDetailDto postDetailDto = postDetailDtos.get(0);
+        assertEquals("tv", postDetailDto.getName());
+        assertEquals("전자제품", postDetailDto.getCategory());
+    }
+
+    @Test
+    @DisplayName("price로만 검색 조회 테스트")
+    public void searchTest2() throws Exception {
+        setUp();
+
+        PostSearch postSearch = new PostSearch();
+        postSearch.setPrice(400000);
+
+        List<PostDto.PostDetailDto> postDetailDtos = postService.getPostBySearch(postSearch);
+        assertEquals(3, postDetailDtos.size());
+    }
+
+    @Test
+    @DisplayName("name과 price 둘다 필터링하는 검색 조회 테스트")
+    public void searchTest3() throws Exception {
+        setUp();
+
+        PostSearch postSearch = new PostSearch();
+        postSearch.setName("ps5");
+        postSearch.setPrice(400000);
+
+        List<PostDto.PostDetailDto> postDetailDtos = postService.getPostBySearch(postSearch);
+        assertEquals(1, postDetailDtos.size());
+
+        PostDto.PostDetailDto postDetailDto = postDetailDtos.get(0);
+        assertEquals("ps5", postDetailDto.getName());
+        assertEquals("전자제품", postDetailDto.getCategory());
+    }
+
+    @Test
+    @DisplayName("구매 시기, 거래 방식 필터링 검색")
+    public void searchTest4() throws Exception {
+        setUp();
+
+        PostSearch postSearch = new PostSearch();
+        postSearch.setDatePurchased(getDate(2021, 1, 1));
+        postSearch.setDirectOrDel("del");
+
+        List<PostDto.PostDetailDto> postDetailDtos = postService.getPostBySearch(postSearch);
+        assertEquals(0, postDetailDtos.size());
+
+        PostSearch postSearch2 = new PostSearch();
+        postSearch2.setDatePurchased(getDate(2021, 1, 1));
+        postSearch2.setDirectOrDel("direct");
+
+        List<PostDto.PostDetailDto> postDetailDtos2 = postService.getPostBySearch(postSearch2);
+        assertEquals(2, postDetailDtos2.size());
+    }
+
+    @Test
+    @DisplayName("제목, 내용으로 필터링 검색")
+    public void searchTest5() throws Exception {
+        setUp();
+
+        PostSearch postSearch = new PostSearch();
+        postSearch.setTitle("o");
+
+        List<PostDto.PostDetailDto> postDetailDtos = postService.getPostBySearch(postSearch);
+        assertEquals(3, postDetailDtos.size());
+
+        postSearch.setContent("b");
+
+        List<PostDto.PostDetailDto> postDetailDtos2 = postService.getPostBySearch(postSearch);
+        assertEquals(2, postDetailDtos2.size());
+    }
 }

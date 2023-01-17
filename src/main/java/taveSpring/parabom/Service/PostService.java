@@ -128,6 +128,7 @@ public class PostService {
                 .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());
     }
 
+    /*검색 조회*/
     public List<PostDto.PostDetailDto> getPostBySearch(PostSearch postSearch) {
         return postRepository.searchPosts(postSearch).stream()
                 .map(post -> new PostDto.PostDetailDto(post)).collect(Collectors.toList());

@@ -234,4 +234,56 @@ public class PostControllerTest {
                 .andExpect(jsonPath("$.data.[4].status").value("good"))
                 .andDo(print());
     }
+
+    @Test
+    @DisplayName("전체 게시물 조회")
+    void test1() throws Exception {
+        setUp();
+
+        given(postService.getAllPostInfo()).willReturn(posts);
+
+        mvc.perform(get("/post/allList"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.count").value("5"))
+                .andExpect(jsonPath("$.data.[0].name").value("ps5"))
+                .andExpect(jsonPath("$.data.[1].name").value("MacBook"))
+                .andExpect(jsonPath("$.data.[2].name").value("clothes"))
+                .andExpect(jsonPath("$.data.[3].name").value("book"))
+                .andExpect(jsonPath("$.data.[4].name").value("tv"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("카테고리 조회")
+    void test2() throws Exception {
+        setUp();
+
+        given(postService.getAllPostInfoByCategory("전자제품")).willReturn(postsByCategory);
+
+        mvc.perform(get("/post/category?categoryName=전자제품"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.count").value("3"))
+                .andExpect(jsonPath("$.data.[0].name").value("ps5"))
+                .andExpect(jsonPath("$.data.[0].memberInfoResponse.nickname").value("nickname1"))
+                .andExpect(jsonPath("$.data.[1].name").value("MacBook"))
+                .andExpect(jsonPath("$.data.[1].memberInfoResponse.nickname").value("nickname2"))
+                .andExpect(jsonPath("$.data.[2].name").value("tv"))
+                .andExpect(jsonPath("$.data.[2].memberInfoResponse.nickname").value("nickname2"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("특정 회원의 게시물 리스트 조회")
+    void test3() throws Exception {
+        setUp();
+
+        Optional<Member> member3 = memberRepository.findByEmail("email3@gmail.com");
+        given(postService.getMemberPost(member3.get().getId())).willReturn(postsByMember);
+
+        mvc.perform(get("/post/memberPostList?id=" + member3.get().getId()))
+                .andExpect(jsonPath("$.count").value("1"))
+                .andExpect(jsonPath("$.data.[0].name").value("book"))
+                .andExpect(jsonPath("$.data.[0].memberInfoResponse.nickname").value("nickname3"))
+                .andDo(print());
+    }
 }
