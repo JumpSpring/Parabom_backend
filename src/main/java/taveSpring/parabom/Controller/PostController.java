@@ -134,6 +134,7 @@ public class PostController {
                 .body(new CommonResponse<List>(postService.getMemberBuyList(id)));
     }
 
+    /*검색 조회*/
     @GetMapping("/search")
     public ResponseEntity<? extends BasicResponse> postSearch(
             @ModelAttribute("postSearch") PostSearch postSearch) {
