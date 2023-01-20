@@ -71,12 +71,18 @@ public class Post {
     }
 
     // 게시물 수정 기능
-    public void update(int price, Integer openOrNot, String status, String directOrDel, String category, String hashtag) {
+    public void update(String image, String title, int price, String content,
+                       String category, Date datePurchased, Integer openOrNot,
+                       String status, String directOrDel, String hashtag) {
+        this.image = image;
+        this.title = title;
         this.price = price;
+        this.content = content;
+        this.category = category;
+        this.datePurchased = datePurchased;
         this.openOrNot = openOrNot;
         this.status = status;
         this.directOrDel = directOrDel;
-        this.category = category;
         this.hashtag = hashtag;
     }
 

@@ -5,7 +5,9 @@ import org.modelmapper.ModelMapper;
 import taveSpring.parabom.Domain.Member;
 import taveSpring.parabom.Domain.Post;
 
+import java.awt.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -104,18 +106,26 @@ public class PostDto {
     /*게시물 수정*/
     @Getter @Setter
     @NoArgsConstructor
-    @AllArgsConstructor
     public static class ModifyRequest{
+        private String image;
+        private String title;
         private int price;
+        private String content;
+        private String category;
+        private Date datePurchased;
         private Integer openOrNot;
         private String status;
         private String directOrDel;
-        private String category;
         private String hashtag;
-
-
-        public ModifyRequest(int price,Integer openOrNot, String status, String directOrDel,String hashtag) {
+        public ModifyRequest(String image, String title, int price, String content,
+                             String category, Date datePurchased, Integer openOrNot,
+                             String status, String directOrDel, String hashtag) {
+            this.image = image;
+            this.title = title;
             this.price = price;
+            this.content = content;
+            this.category = category;
+            this.datePurchased = datePurchased;
             this.openOrNot = openOrNot;
             this.status = status;
             this.directOrDel = directOrDel;

@@ -114,9 +114,9 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("게시물 정보가 없습니다."));
         // 글 수정
-        post.update(request.getPrice(), request.getOpenOrNot(), request.getStatus(),
-                request.getDirectOrDel(), request.getCategory(), request.getHashtag());
-
+        post.update(request.getImage(), request.getTitle(), request.getPrice(), request.getContent(),
+                request.getCategory(), request.getDatePurchased(), request.getOpenOrNot(),
+                request.getStatus(), request.getDirectOrDel(), request.getHashtag());
     }
 
     /*구매 내역 조회*/
