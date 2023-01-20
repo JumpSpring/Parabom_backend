@@ -120,7 +120,7 @@ class PostServiceTest {
         Long postId = post.getId();
 
         PostDto.ModifyRequest modifyRequest =
-                new PostDto.ModifyRequest("image.jpg", "Camera", 300000, "camera", "etc",
+                new PostDto.ModifyRequest("Camera", 300000, "camera", "etc",
                         new Date(2023, 01, 10), 1, "Very Good",
                         "delivery", "기타");
         postService.postUpdate(postId, modifyRequest);

@@ -173,7 +173,7 @@ public class PostControllerTest {
         setUp();
 
         PostDto.ModifyRequest modifyRequest =
-                new PostDto.ModifyRequest("image.jpg", "Camera", 500000, "camera", "etc",
+                new PostDto.ModifyRequest("Camera", 500000, "camera", "etc",
                         new Date(2023, 01, 10), 1, "veryGood",
                         "delivery", "etc");
         String requestJson = toJsonString(modifyRequest);

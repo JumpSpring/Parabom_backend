@@ -107,7 +107,6 @@ public class PostDto {
     @Getter @Setter
     @NoArgsConstructor
     public static class ModifyRequest{
-        private String image;
         private String title;
         private int price;
         private String content;
@@ -117,10 +116,9 @@ public class PostDto {
         private String status;
         private String directOrDel;
         private String hashtag;
-        public ModifyRequest(String image, String title, int price, String content,
+        public ModifyRequest(String title, int price, String content,
                              String category, Date datePurchased, Integer openOrNot,
                              String status, String directOrDel, String hashtag) {
-            this.image = image;
             this.title = title;
             this.price = price;
             this.content = content;
