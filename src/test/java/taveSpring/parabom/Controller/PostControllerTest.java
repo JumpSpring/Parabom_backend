@@ -173,16 +173,16 @@ public class PostControllerTest {
         setUp();
 
         PostDto.ModifyRequest modifyRequest =
-                new PostDto.ModifyRequest(500000, 1, "veryGood", "delivery", "etc");
+                new PostDto.ModifyRequest("Camera", 500000, "camera", "etc",
+                        new Date(2023, 01, 10), 1, "veryGood",
+                        "delivery", "etc");
         String requestJson = toJsonString(modifyRequest);
-
 
         mvc.perform(patch("/post/1")
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andDo(print());
-
     }
 
     @Test
